@@ -37,76 +37,64 @@ class _HomePageState extends State<HomePage> {
         title: Text('Inventory - July'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
+      body: Stack(
+            children: <Widget>[
               Container(
-                height: 50.0,
+                height: 100.0,
                 margin: EdgeInsets.only(left: 150.0, top: statusBarHeight, right: 350.0),
                 child: ListView(
                   controller: _scrollController,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   children: productCountList.map((ProductCount count){
-                    return Card(
-                      margin: EdgeInsets.only(left: 8.0),
-                      child: Container(
-                        height: 50.0,
-                        width: 400.0,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: count.today ? Colors.red[900].withOpacity(0.1) : null,
-                          border: Border.all(width: 2.0, color: Colors.black12),
+                    return Column(
+                      children: <Widget>[
+                        Card(
+                          margin: EdgeInsets.only(left: 8.0),
+                          child: Container(
+                            height: 50.0,
+                            width: 400.0,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: count.today ? Colors.red[900].withOpacity(0.1) : null,
+                              border: Border.all(width: 2.0, color: Colors.black12),
+                            ),
+                            child: Text(count.day),
+                          ),
                         ),
-                        child: Text(count.day),
-                      ),
+                        ProductCountWidget(productCount: count),
+                      ],
                     );
                   }).toList(),
                 ),
               ),
-              Container(
-                height: 50.0,
-                width: 150.0,
-                margin: EdgeInsets.only(top: statusBarHeight),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 2.0, color: Colors.black12),
-                ),
-                child: Text('DATA'),
+              Column(
+                children: [
+                  Container(
+                    height: 50.0,
+                    width: 150.0,
+                    margin: EdgeInsets.only(top: statusBarHeight),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 2.0, color: Colors.black12),
+                    ),
+                    child: Text('DATA'),
+                  ),
+                  Container(
+                    height: 50.0,
+                    width: 150.0,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 2.0, color: Colors.black12),
+                    ),
+                    child: Text('COCA COLA'),
+                  ),
+                ],
               ),
             ],
           ),
-          Stack(
-            children: [
-              Container(
-                height: 50.0,
-                margin: EdgeInsets.only(left: 150.0, right: 350.0),
-                child: ListView(
-                  controller: _scrollController,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: productCountList.map((ProductCount count){
-                    return ProductCountWidget(productCount: count);
-                  }).toList(),
-                ),
-              ),
-              Container(
-                height: 50.0,
-                width: 150.0,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 2.0, color: Colors.black12),
-                ),
-                child: Text('COCA COLA'),
-              ),
-            ],
-          ),
-
-        ]
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {

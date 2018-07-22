@@ -22,3 +22,10 @@ List<ProductCount> productCountList = [
 //      true
 //  ),
 ];
+
+List<String> columnList = [
+  'DATA',
+  'COCA COLA',
+  'CUCA LATA',
+  'EKA GARRAFA',
+];
