@@ -37,65 +37,104 @@ class _HomePageState extends State<HomePage> {
         title: Text('Inventario - Julho'),
         centerTitle: true,
       ),
-      body: Stack(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 150.0, right: 350.0),
-                child: ListView(
-                  controller: _scrollController,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: productCountList.map((ProductCount count){
-                    return Column(
-                      children: columnList.map((String value){
-                        switch(value){
-                          case 'DATA':
-                            return Card(
-                              margin: EdgeInsets.only(left: 8.0),
-                              child: Container(
-                                height: 50.0,
-                                width: 400.0,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: count.today ? Colors.red[900].withOpacity(0.1) : null,
-                                  border: Border.all(width: 2.0, color: Colors.black12),
-                                ),
-                                child: Text(count.day),
+      body: Container(
+        margin: EdgeInsets.only(top: statusBarHeight),
+        child: Stack(
+              children: <Widget>[
+                Column(
+                  children: [
+                    Container(
+                      height: 50.0,
+                      margin: EdgeInsets.only(left: 150.0, right: 350.0),
+                      child: ListView(
+                        //physics: NeverScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: dateCountList.map((ProductCount count){
+                          return Card(
+                            margin: EdgeInsets.only(left: 8.0),
+                            child: Container(
+                              height: 50.0,
+                              width: 400.0,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: count.today ? Colors.red[900].withOpacity(0.1) : null,
+                                border: Border.all(width: 2.0, color: Colors.black12),
                               ),
-                            );
-                          default:
-                            return ProductCountWidget(productCount: count);
-                        }
-                      }).toList(),
+                              child: Text(count.day),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    Container(
+                      height: 50.0,
+                      margin: EdgeInsets.only(left: 150.0, right: 350.0),
+                      child: ListView(
+                        //physics: NeverScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: cokeCountList.map((ProductCount count){
+                          return ProductCountWidget(list: cokeCountList, productCount: count);
+                        }).toList(),
+                      ),
+                    ),
+                    Container(
+                      height: 50.0,
+                      margin: EdgeInsets.only(left: 150.0, right: 350.0),
+                      child: ListView(
+                        //physics: NeverScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: cucaCountList.map((ProductCount count){
+                          return ProductCountWidget(list: cucaCountList, productCount: count);
+                        }).toList(),
+                      ),
+                    ),
+                    Container(
+                      height: 50.0,
+                      margin: EdgeInsets.only(left: 150.0, right: 350.0),
+                      child: ListView(
+                        //physics: NeverScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: ekaCountList.map((ProductCount count){
+                          return ProductCountWidget(list: ekaCountList, productCount: count);
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: columnList.map((String value){
+                    return Container(
+                      height: 50.0,
+                      width: 150.0,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 2.0, color: Colors.black12),
+                      ),
+                      child: Text(value),
                     );
                   }).toList(),
                 ),
-              ),
-              Column(
-                children: columnList.map((String value){
-                  return Container(
-                    height: 50.0,
-                    width: 150.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 2.0, color: Colors.black12),
-                    ),
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
+              ],
+            ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            if (productCountList.isNotEmpty) {
-              productCountList.elementAt(productCountList.length - 1).today =
-                  false;
+            for(List<ProductCount> list in p){
+              list.elementAt(list.length - 1).today = false;
+              list.add(
+                  ProductCount('COCA COLA',DateTime.now().toString(), 0, 0, 0, 0, 0, false, true)
+              );
             }
-            productCountList.add(ProductCount('COCA COLA',DateTime.now().toString(), 0, 0, 0, 0, 0, false, true));
-            //_diff = '';
           });
           SchedulerBinding.instance.addPostFrameCallback((_) {
             _scrollController.animateTo(
@@ -108,5 +147,16 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add, color: Colors.white),
       ),
     );
+  }
+
+  Iterable<Widget> _buildInventoryData() {
+    List<Widget> listOfItem = <Widget>[];
+
+    for (List<ProductCount> list in p) {
+      listOfItem.add(
+          ProductCountWidget(productCount: list.first, list: list)
+      );
+    }
+    return listOfItem;
   }
 }

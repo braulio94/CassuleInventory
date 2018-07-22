@@ -5,8 +5,9 @@ import 'package:inventory_app/model/product_count.dart';
 class ProductCountWidget extends StatefulWidget {
 
   final ProductCount productCount;
+  final List<ProductCount> list;
 
-  ProductCountWidget({this.productCount});
+  ProductCountWidget({this.productCount, this.list});
 
   @override
   _ProductCountWidgetState createState() => _ProductCountWidgetState();
@@ -16,11 +17,11 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
 
   String _diff = '';
   int _currentDay;
-  Color missingColor = Colors.black87;
+  Color missingColor = Colors.black;
 
   _calculateDiff(String value) {
     widget.productCount.prevDay = int.parse(value);
-    int _prevDayValue = productCountList.elementAt(productCountList.length - 2).prevDay + productCountList.elementAt(productCountList.length - 2).added;
+    int _prevDayValue = widget.list.elementAt(widget.list.length - 2).prevDay + widget.list.elementAt(widget.list.length - 2).added;
     _currentDay = _prevDayValue - int.parse(value);
     setState(() {
       _diff = '$_currentDay';
@@ -37,7 +38,7 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
         widget.productCount.editDiff = false;
       });
       if(widget.productCount.diff < int.parse(value)){
-        missingColor = Colors.black54;
+        missingColor = Colors.black;
       } else if(widget.productCount.diff > int.parse(value)) {
         missingColor = Colors.red;
       }
@@ -114,17 +115,17 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
                 });
               },
               '${widget.productCount.added}',
-              true
+            widget.productCount.today,
           ),
           _productValueHolder(
               _calculateMissing,
               '${widget.productCount.sold}',
-              true
+            widget.productCount.today,
           ),
           _productValueHolder(
               _calculateDiff,
               '${widget.productCount.prevDay}',
-              true
+            widget.productCount.today,
           ),
         ],
       ),
