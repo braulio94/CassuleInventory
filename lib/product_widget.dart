@@ -14,7 +14,7 @@ class ProductCountWidget extends StatefulWidget {
 
 class _ProductCountWidgetState extends State<ProductCountWidget> {
 
-  String _diff = '0';
+  String _diff = '';
   int _currentDay;
   Color missingColor = Colors.black87;
 

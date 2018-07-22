@@ -3,6 +3,7 @@
 class ProductCount {
 
   String day;
+  String productName;
   int prevDay;
   int diff;
   int added;
@@ -12,6 +13,7 @@ class ProductCount {
   bool editDiff;
 
   ProductCount(
+      this.productName,
       this.day,
       this.prevDay,
       this.diff,
