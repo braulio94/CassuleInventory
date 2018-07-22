@@ -14,7 +14,7 @@ class ProductCountWidget extends StatefulWidget {
 
 class _ProductCountWidgetState extends State<ProductCountWidget> {
 
-  String _diff = '';
+  String _diff = '0';
   int _currentDay;
   Color missingColor = Colors.black87;
 
@@ -86,59 +86,48 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
       );
     }
 
-    return Column(
-      children: [
-        Container(
-          height: 50.0,
-          width: 400.0,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: widget.productCount.today ? Colors.red[900].withOpacity(0.1) : null,
-            border: Border.all(width: 2.0, color: Colors.black12),
+    return Card(
+      margin: EdgeInsets.only(left: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          _productValueHolder(
+              _addDiff,
+              widget.productCount.today ? _diff : '${widget.productCount.diff}',
+              widget.productCount.editDiff,
           ),
-          child: Text(widget.productCount.day),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            _productValueHolder(
-                _addDiff,
-                widget.productCount.today ? _diff : '${widget.productCount.diff}',
-                widget.productCount.editDiff,
-            ),
-            _productValueHolder(
-                (value){
-                  setState(() {
-                    widget.productCount.editDiff = false;
-                  });
-                },
-                '${widget.productCount.missing}',
-                widget.productCount.editDiff,
-                style: TextStyle(color: missingColor),
-            ),
-            _productValueHolder(
-                (value){
-                  setState(() {
-                    widget.productCount.editDiff = false;
-                    widget.productCount.added = int.parse(value);
-                  });
-                },
-                '${widget.productCount.added}',
-                true
-            ),
-            _productValueHolder(
-                _calculateMissing,
-                '${widget.productCount.sold}',
-                true
-            ),
-            _productValueHolder(
-                _calculateDiff,
-                '${widget.productCount.prevDay}',
-                true
-            ),
-          ],
-        ),
-      ],
+          _productValueHolder(
+              (value){
+                setState(() {
+                  widget.productCount.editDiff = false;
+                });
+              },
+              '${widget.productCount.missing}',
+              widget.productCount.editDiff,
+              style: TextStyle(color: missingColor),
+          ),
+          _productValueHolder(
+              (value){
+                setState(() {
+                  widget.productCount.editDiff = false;
+                  widget.productCount.added = int.parse(value);
+                });
+              },
+              '${widget.productCount.added}',
+              true
+          ),
+          _productValueHolder(
+              _calculateMissing,
+              '${widget.productCount.sold}',
+              true
+          ),
+          _productValueHolder(
+              _calculateDiff,
+              '${widget.productCount.prevDay}',
+              true
+          ),
+        ],
+      ),
     );
   }
 }

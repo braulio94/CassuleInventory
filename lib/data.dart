@@ -14,12 +14,7 @@ List<ProductCount> productCountList = [
 //      12,
 //      false
 //  ),
-//  ProductCount(
-//      '17/Julho',
-//      48,
-//      2,
-//      true
-//  ),
+  ProductCount(DateTime.now().toString(), 0, 0, 0, 0, 0, false, true)
 //  ProductCount(
 //      '18/Julho',
 //      null,

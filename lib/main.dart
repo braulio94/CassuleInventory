@@ -29,17 +29,6 @@ class _HomePageState extends State<HomePage> {
 
   ScrollController _scrollController = new ScrollController();
 
-  Iterable<Widget> _buildInventoryData() {
-    List<Widget> listOfItem = <Widget>[];
-
-    for (ProductCount count in productCountList) {
-      listOfItem.add(
-        ProductCountWidget(productCount: count)
-      );
-    }
-    return listOfItem;
-  }
-
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -48,54 +37,75 @@ class _HomePageState extends State<HomePage> {
         title: Text('Inventory - July'),
         centerTitle: true,
       ),
-      body: Stack(
+      body: Column(
         children: [
-          Container(
-            height: 150.0,
-            margin: EdgeInsets.only(left: 150.0, top: statusBarHeight, right: 350.0),
-            child: ListView(
-              controller: _scrollController,
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: _buildInventoryData(),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: statusBarHeight),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Container(
-                      height: 50.0,
-                      width: 150.0,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2.0, color: Colors.black12),
-                        color: Colors.white,
+          Stack(
+            children: [
+              Container(
+                height: 50.0,
+                margin: EdgeInsets.only(left: 150.0, top: statusBarHeight, right: 350.0),
+                child: ListView(
+                  controller: _scrollController,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  children: productCountList.map((ProductCount count){
+                    return Card(
+                      margin: EdgeInsets.only(left: 8.0),
+                      child: Container(
+                        height: 50.0,
+                        width: 400.0,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: count.today ? Colors.red[900].withOpacity(0.1) : null,
+                          border: Border.all(width: 2.0, color: Colors.black12),
+                        ),
+                        child: Text(count.day),
                       ),
-                      child: Text('Nome do Producto'),
-                    ),
-                  ],
+                    );
+                  }).toList(),
                 ),
-                Row(
-                  children: <Widget>[
-                    Container(
-                      height: 50.0,
-                      width: 150.0,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 2.0, color: Colors.black12),
-                      ),
-                      child: Text('Cuca Garrafa'),
-                    ),
-                  ],
+              ),
+              Container(
+                height: 50.0,
+                width: 150.0,
+                margin: EdgeInsets.only(top: statusBarHeight),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(width: 2.0, color: Colors.black12),
                 ),
-              ],
-            ),
+                child: Text('DATA'),
+              ),
+            ],
           ),
-        ],
+          Stack(
+            children: [
+              Container(
+                height: 50.0,
+                margin: EdgeInsets.only(left: 150.0, right: 350.0),
+                child: ListView(
+                  controller: _scrollController,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  children: productCountList.map((ProductCount count){
+                    return ProductCountWidget(productCount: count);
+                  }).toList(),
+                ),
+              ),
+              Container(
+                height: 50.0,
+                width: 150.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(width: 2.0, color: Colors.black12),
+                ),
+                child: Text('COCA COLA'),
+              ),
+            ],
+          ),
+
+        ]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
