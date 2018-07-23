@@ -1,27 +1,16 @@
 
 import 'package:inventory_app/model/product_count.dart';
-
-List<ProductCount> cokeCountList = [
-  ProductCount('COCA COLA', DateTime.now().toString(), 0, 0, 0, 0, 0, false, true)
-];
-
-List<ProductCount> cucaCountList = [
-  ProductCount('CUCA LATA', DateTime.now().toString(), 0, 0, 0, 0, 0, false, true)
-];
-
-List<ProductCount> ekaCountList = [
-  ProductCount('EKA GARRAFA', DateTime.now().toString(), 0, 0, 0, 0, 0, false, true)
-];
-
-List<ProductCount> dateCountList = [
-  ProductCount('DATA', DateTime.now().toString(), 0, 0, 0, 0, 0, false, true)
-];
+import 'package:intl/intl.dart';
 
 List<List<ProductCount>> p = [
-  cokeCountList,
-  cucaCountList,
-  ekaCountList,
-  dateCountList,
+  productList,
+];
+
+List<ProductCount> productList = [
+  ProductCount('DATA', DateFormat.yMMMd().format(DateTime.now()), 0, 0, 0, 0, 0, 0, 0, false, true),
+  ProductCount('COCA COLA', DateTime.now().toString(), 0, 0, 0, 0, 0, 0, 0, false, true),
+  ProductCount('CUCA LATA', DateTime.now().toString(), 0, 0, 0, 0, 0, 0, 0, false, true),
+  ProductCount('EKA GARRAFA', DateTime.now().toString(), 0, 0, 0, 0, 0, 0, 0, false, true),
 ];
 
 List<String> columnList = [

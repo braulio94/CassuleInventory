@@ -5,9 +5,8 @@ import 'package:inventory_app/model/product_count.dart';
 class ProductCountWidget extends StatefulWidget {
 
   final ProductCount productCount;
-  final List<ProductCount> list;
 
-  ProductCountWidget({this.productCount, this.list});
+  ProductCountWidget({this.productCount});
 
   @override
   _ProductCountWidgetState createState() => _ProductCountWidgetState();
@@ -20,9 +19,13 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
   Color missingColor = Colors.black;
 
   _calculateDiff(String value) {
-    widget.productCount.prevDay = int.parse(value);
-    int _prevDayValue = widget.list.elementAt(widget.list.length - 2).prevDay + widget.list.elementAt(widget.list.length - 2).added;
-    _currentDay = _prevDayValue - int.parse(value);
+    widget.productCount.remaining = int.parse(value);
+    int _prevDayValue = widget.productCount.prevDay + widget.productCount.prevDayAdded;
+    if(_prevDayValue == 0){
+      _currentDay = 0;
+    } else {
+      _currentDay = _prevDayValue - int.parse(value);
+    }
     setState(() {
       _diff = '$_currentDay';
       widget.productCount.diff = _currentDay;
@@ -89,6 +92,7 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
 
     return Card(
       margin: EdgeInsets.only(left: 8.0),
+      elevation: 0.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -124,7 +128,7 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
           ),
           _productValueHolder(
               _calculateDiff,
-              '${widget.productCount.prevDay}',
+              '${widget.productCount.remaining}',
             widget.productCount.today,
           ),
         ],
