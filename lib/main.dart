@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_app/data.dart';
@@ -31,19 +33,63 @@ class _HomePageState extends State<HomePage> {
 
   ScrollController _scrollController = new ScrollController();
   ProductDatabase database;
+  List<List<ProductCount>> p = List();
+  List<ProductCount> productList = List();
 
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     database = ProductDatabase();
     database.initDB();
+    setUpList();
+  }
+
+  setUpList() async {
+    List<ProductCount> list = await database.getProducts("DATA");
+    for(ProductCount count in list){
+      List<ProductCount> countList = [];
+      for(int i = 0; i < columnList.length; i++){
+        String tableName = columnList[i].replaceAll(RegExp(r"\s+\b|\b\s"), "");
+        ProductCount product =  await database.getSingleProduct(count.id, tableName);
+        countList.add(product);
+      }
+      setState(() {
+        p.add(countList);
+      });
+    }
   }
 
   @override
   void dispose() {
     database.closeDb();
     super.dispose();
+  }
+
+  void _addNewProduct() async {
+    List<ProductCount> list = [];
+    for(int i = 0; i< columnList.length; i++){
+      String productName = columnList[i].replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      if(p.isNotEmpty){
+        p.last[i].today = false;
+      }
+      ProductCount product = ProductCount(productName, DateFormat.yMMMd().format(DateTime.now()), p.isNotEmpty ? p.last[i].remaining : 0, p.isNotEmpty ? p.last[i].added : 0, 0, 0, 0, 0, 0, false, true);
+      product = await database.upsertProduct(product, productName);
+      list.add(product);
+      if(p.isNotEmpty){
+        database.upsertProduct(p.last[i], productName);
+      }
+    }
+    setState(() {
+      p.add(list);
+    });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
@@ -61,12 +107,14 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   margin: EdgeInsets.only(left: 150.0, right: 350.0),
                   child: ListView(
+                    physics: BouncingScrollPhysics(),
                     controller: _scrollController,
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     children: p.map((List<ProductCount> list){
                       return Column(
                         children: list.map((ProductCount count){
+                          print('Product ${count.id} and today is ${count.today}');
                           switch(count.productName){
                             case 'DATA':
                               return Card(
@@ -83,11 +131,11 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                                 ),
                               );
-                            case 'COCA COLA':
+                            case 'COCACOLA':
                               return ProductCountWidget(productCount: count);
-                            case 'CUCA LATA':
+                            case 'CUCALATA':
                               return ProductCountWidget(productCount: count);
-                            case 'EKA GARRAFA':
+                            case 'EKAGARRAFA':
                               return ProductCountWidget(productCount: count);
                           }
                         }).toList(),
@@ -116,25 +164,7 @@ class _HomePageState extends State<HomePage> {
             ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState((){
-            List<ProductCount> list = [];
-            for(int i = 0; i< p.last.length; i++){
-              p.last[i].today = false;
-              list.add(
-                  ProductCount(p.last[i].productName, DateFormat.yMMMd().format(DateTime.now()), p.last[i].remaining, p.last[i].added, 0, 0, 0, 0, 0, false, true)
-              );
-            }
-            p.add(list);
-          });
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          });
-        },
+        onPressed: _addNewProduct,
         child: Icon(Icons.add, color: Colors.white),
       ),
     );
