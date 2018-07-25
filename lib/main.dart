@@ -114,7 +114,6 @@ class _HomePageState extends State<HomePage> {
                     children: p.map((List<ProductCount> list){
                       return Column(
                         children: list.map((ProductCount count){
-                          print('Product ${count.id} and today is ${count.today}');
                           switch(count.productName){
                             case 'DATA':
                               return Card(
@@ -131,11 +130,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                                 ),
                               );
-                            case 'COCACOLA':
-                              return ProductCountWidget(productCount: count);
-                            case 'CUCALATA':
-                              return ProductCountWidget(productCount: count);
-                            case 'EKAGARRAFA':
+                            default:
                               return ProductCountWidget(productCount: count);
                           }
                         }).toList(),
