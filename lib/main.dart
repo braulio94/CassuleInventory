@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               );
                             default:
-                              return ProductCountWidget(productCount: count);
+                              return ProductCountWidget(productCount: count, database: database);
                           }
                         }).toList(),
                       );
