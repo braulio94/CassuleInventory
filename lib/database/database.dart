@@ -47,7 +47,7 @@ class ProductDatabase {
 
   _onCreate(Database db, int version) async {
     for(int i = 0; i < columnList.length; i++){
-      String tableName = columnList[i].replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      String tableName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
       await db.execute(
           "CREATE TABLE $tableName ("
               "$db_id INTEGER PRIMARY KEY,"

@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +5,7 @@ import 'package:inventory_app/data.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'dart:core';
 import 'package:flutter/scheduler.dart';
+import 'package:inventory_app/model/product_details.dart';
 import 'package:inventory_app/product_widget.dart';
 import 'package:inventory_app/database/database.dart';
 
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     for(ProductCount count in list){
       List<ProductCount> countList = [];
       for(int i = 0; i < columnList.length; i++){
-        String tableName = columnList[i].replaceAll(RegExp(r"\s+\b|\b\s"), "");
+        String tableName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
         ProductCount product =  await database.getSingleProduct(count.id, tableName);
         countList.add(product);
       }
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   void _addNewProduct() async {
     List<ProductCount> list = [];
     for(int i = 0; i< columnList.length; i++){
-      String productName = columnList[i].replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      String productName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
       if(p.isNotEmpty){
         p.last[i].today = false;
       }
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Column(
-                  children: columnList.map((String value){
+                  children: columnList.map((ProductDetails details){
                     return Card(
                       elevation: 4.0,
                       margin: EdgeInsets.all(0.0),
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                           border: Border.all(width: 2.0, color: Colors.black12),
                         ),
-                        child: Text(value),
+                        child: Text(details.productName),
                       ),
                     );
                   }).toList(),
