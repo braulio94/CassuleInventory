@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_app/data.dart';
+import 'package:inventory_app/model/description_details.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'dart:core';
 import 'package:flutter/scheduler.dart';
@@ -128,6 +129,28 @@ class _HomePageState extends State<HomePage> {
                                     border: Border.all(width: 2.0, color: Colors.black12),
                                   ),
                                   child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                ),
+                              );
+                            case 'DESCRIPTION':
+                              return Container(
+                                margin: EdgeInsets.only(left: 8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: descriptionIcons.map((DescriptionDetail desc){
+                                    return Container(
+                                      height: 50.0,
+                                      width: 80.0,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 2.0, color: Colors.black12),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(desc.icon),
+                                        tooltip: desc.tooptip,
+                                        onPressed: null,
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               );
                             default:
