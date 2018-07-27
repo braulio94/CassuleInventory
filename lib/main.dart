@@ -143,9 +143,9 @@ class _HomePageState extends State<HomePage> {
                     //color: Colors.red[900],
                     child: Column( crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        buildRow(3,7,1, 1),
-                        buildRow(3,4,1,1),
                         buildRow(3,1,1,1),
+                        buildRow(3,4,1,1),
+                        buildRow(3,7,1, 1),
                         Expanded(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
