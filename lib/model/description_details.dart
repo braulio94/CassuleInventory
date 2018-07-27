@@ -6,7 +6,8 @@ class DescriptionDetail {
 
   IconData icon;
   String tooptip;
+  Color color;
 
-  DescriptionDetail(this.icon, this.tooptip);
+  DescriptionDetail(this.icon, this.tooptip, this.color);
 
 }

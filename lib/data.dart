@@ -13,10 +13,10 @@ List<ProductDetails> columnList = [
 ];
 
 List<DescriptionDetail> descriptionIcons = [
-  DescriptionDetail(Icons.compare_arrows, 'Diferenca'),
-  DescriptionDetail(Icons.remove, 'Falta'),
-  DescriptionDetail(Icons.add, 'Adicionado'),
-  DescriptionDetail(Icons.attach_money, 'Vendido'),
-  DescriptionDetail(Icons.info_outline, 'Resto'),
+  DescriptionDetail(Icons.compare_arrows, 'Diferenca', Colors.orange),
+  DescriptionDetail(Icons.remove, 'Falta', Colors.red),
+  DescriptionDetail(Icons.add, 'Adicionado', Colors.blue),
+  DescriptionDetail(Icons.attach_money, 'Vendido', Colors.green),
+  DescriptionDetail(Icons.info_outline, 'Resto', Colors.black87),
 ];
 

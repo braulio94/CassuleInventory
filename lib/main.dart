@@ -93,9 +93,39 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Widget buildRow(int numberKeyCount, int startNumber,  int numberFlex, int operrationFlex){
+    return new Expanded(child:
+    Row(crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: new List.from(buildNumberButtons(numberKeyCount,startNumber ,numberFlex))));
+  }
+
+  List<Widget>  buildNumberButtons( int count,int from, int flex) {
+    return new Iterable.generate(count, (index) {
+      return new Expanded(flex: flex,
+        child: new Padding(padding: const EdgeInsets.all(1.0),
+          child: FlatButton(onPressed: (){},//numberPressed(from + index), color: Colors.white,
+              child: Text("${from + index}", style: TextStyle(fontSize: 40.0),)),
+        ),
+      );
+    }).toList();
+  }
+
+  Widget buildOperatorButton(String label, int flex){
+    return Expanded(flex: flex,
+      child: Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: FlatButton(onPressed: (){},
+            child: Text(label, style: TextStyle(fontSize: 40.0),)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double tableWidth = 3 * (screenWidth / 4);
+    double keyboardWidth = screenWidth / 4;
     return Scaffold(
       appBar: AppBar(
         title: Text('Inventario - Julho'),
@@ -105,8 +135,33 @@ class _HomePageState extends State<HomePage> {
         margin: EdgeInsets.only(top: statusBarHeight),
         child: Stack(
               children: <Widget>[
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    width: keyboardWidth,
+                    height: 300.0,
+                    //color: Colors.red[900],
+                    child: Column( crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        buildRow(3,7,1, 1),
+                        buildRow(3,4,1,1),
+                        buildRow(3,1,1,1),
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              buildOperatorButton("0", 1),
+                              buildOperatorButton("ENTRAR", 2)
+                            ]
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Container(
-                  margin: EdgeInsets.only(left: 150.0, right: 350.0),
+                  width: tableWidth,
+                  padding: EdgeInsets.only(right: 8.0),
                   child: ListView(
                     physics: BouncingScrollPhysics(),
                     controller: _scrollController,
@@ -125,10 +180,10 @@ class _HomePageState extends State<HomePage> {
                                   width: 400.0,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: count.today ? Colors.red[900].withOpacity(0.1) : null,
+                                    color: count.today ? Colors.red[700] : null,
                                     border: Border.all(width: 2.0, color: Colors.black12),
                                   ),
-                                  child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                  child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
                                 ),
                               );
                             case 'DESCRIPTION':
@@ -145,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                                         border: Border.all(width: 2.0, color: Colors.black12),
                                       ),
                                       child: IconButton(
-                                        icon: Icon(desc.icon),
+                                        icon: Icon(desc.icon, color: count.today ? desc.color : null),
                                         tooltip: desc.tooptip,
                                         onPressed: null,
                                       ),
