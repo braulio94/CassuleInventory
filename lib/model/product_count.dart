@@ -1,5 +1,7 @@
 
 
+import 'package:inventory_app/model/edit_product.dart';
+
 class ProductCount {
 
   int id;
@@ -14,6 +16,7 @@ class ProductCount {
   int remaining;
   bool today;
   bool editDiff;
+  ProductEdit edit;
 
   ProductCount(
       this.productName,
@@ -27,7 +30,8 @@ class ProductCount {
       this.remaining,
       this.editDiff,
       this.today,
-      {this.id}
+      {this.id,
+      this.edit}
       );
 
   ProductCount.fromDb(Map map)

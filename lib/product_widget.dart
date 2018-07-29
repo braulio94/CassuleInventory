@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_app/data.dart';
 import 'package:inventory_app/model/edit_product.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'package:inventory_app/database/database.dart';
@@ -8,8 +9,9 @@ class ProductCountWidget extends StatefulWidget {
 
   final ProductCount productCount;
   final ProductDatabase database;
+  final Function(ProductCount selectedProduct) onSelectedProduct;
 
-  ProductCountWidget({this.productCount, this.database});
+  ProductCountWidget({this.productCount, this.database, this.onSelectedProduct});
 
   @override
   _ProductCountWidgetState createState() => _ProductCountWidgetState();
@@ -62,6 +64,19 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
     });
   }
 
+  void changeProductValue(ProductEdit editState){
+    setState(() {
+      for(int i = 0; i< columnList.length; i++){
+        if(p.isNotEmpty){
+          p.last[i].editDiff = false;
+        }
+      }
+      widget.productCount.edit = editState;
+      widget.productCount.editDiff = !widget.productCount.editDiff;
+    });
+    widget.onSelectedProduct(widget.productCount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -74,27 +89,42 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
             value: '${widget.productCount.diff}',
             holderName: ProductEdit.Diff,
             product: widget.productCount,
+            onPressed: (){
+              changeProductValue(ProductEdit.Diff);
+            },
           ),
           ProductRowValue(
             value: '${widget.productCount.missing}',
             holderName: ProductEdit.Missing,
             product: widget.productCount,
             style: TextStyle(color: widget.productCount.missing.isNegative ? Colors.red : Colors.black),
+            onPressed: (){
+              changeProductValue(ProductEdit.Missing);
+            },
           ),
           ProductRowValue(
             value: '${widget.productCount.added}',
             holderName: ProductEdit.Added,
             product: widget.productCount,
+            onPressed: (){
+              changeProductValue(ProductEdit.Added);
+            },
           ),
           ProductRowValue(
             value: '${widget.productCount.sold}',
             holderName: ProductEdit.Sold,
             product: widget.productCount,
+            onPressed: (){
+              changeProductValue(ProductEdit.Sold);
+            },
           ),
           ProductRowValue(
             value: '${widget.productCount.remaining}',
             holderName: ProductEdit.Remaining,
             product: widget.productCount,
+            onPressed: (){
+              changeProductValue(ProductEdit.Remaining);
+            },
           ),
         ],
       ),

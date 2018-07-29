@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:inventory_app/calc_buttons.dart';
 import 'package:inventory_app/data.dart';
 import 'package:inventory_app/model/description_details.dart';
+import 'package:inventory_app/model/edit_product.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'dart:core';
 import 'package:flutter/scheduler.dart';
@@ -34,9 +36,8 @@ class _HomePageState extends State<HomePage> {
 
   ScrollController _scrollController = new ScrollController();
   ProductDatabase database;
-  List<List<ProductCount>> p = List();
   List<ProductCount> productList = List();
-
+  ProductCount selectedProduct;
 
   @override
   initState() {
@@ -93,33 +94,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget buildRow(int numberKeyCount, int startNumber,  int numberFlex, int operrationFlex){
-    return new Expanded(child:
-    Row(crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: new List.from(buildNumberButtons(numberKeyCount,startNumber ,numberFlex))));
-  }
-
-  List<Widget>  buildNumberButtons( int count,int from, int flex) {
-    return new Iterable.generate(count, (index) {
-      return new Expanded(flex: flex,
-        child: new Padding(padding: const EdgeInsets.all(1.0),
-          child: FlatButton(onPressed: (){},//numberPressed(from + index), color: Colors.white,
-              child: Text("${from + index}", style: TextStyle(fontSize: 40.0),)),
-        ),
-      );
-    }).toList();
-  }
-
-  Widget buildOperatorButton(String label, int flex){
-    return Expanded(flex: flex,
-      child: Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: FlatButton(onPressed: (){},
-            child: Text(label, style: TextStyle(fontSize: 40.0),)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -137,26 +111,33 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Align(
                   alignment: Alignment.topRight,
-                  child: Container(
-                    width: keyboardWidth,
-                    height: 300.0,
-                    //color: Colors.red[900],
-                    child: Column( crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        buildRow(3,1,1,1),
-                        buildRow(3,4,1,1),
-                        buildRow(3,7,1, 1),
-                        Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              buildOperatorButton("0", 1),
-                              buildOperatorButton("ENTRAR", 2)
-                            ]
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: CalculatorButtons(
+                    keyboardWidth: keyboardWidth,
+                    onNumberPressed: (int value){
+                      print('Number pressed is $value');
+                      if(selectedProduct != null && selectedProduct.today){
+                        print('Selected product id is ${selectedProduct.id} and name is ${selectedProduct.productName}');
+                        setState(() {
+                          switch(selectedProduct.edit){
+                            case ProductEdit.Diff:
+                              selectedProduct.diff = value;
+                              break;
+                            case ProductEdit.Missing:
+                              selectedProduct.missing = value;
+                              break;
+                            case ProductEdit.Added:
+                              selectedProduct.added = value;
+                              break;
+                            case ProductEdit.Sold:
+                              selectedProduct.sold = value;
+                              break;
+                            case ProductEdit.Remaining:
+                              selectedProduct.remaining = value;
+                              break;
+                          }
+                        });
+                      }
+                    },
                   ),
                 ),
                 Container(
@@ -209,7 +190,14 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               );
                             default:
-                              return ProductCountWidget(productCount: count, database: database);
+                              return ProductCountWidget(
+                                productCount: count,
+                                database: database,
+                                onSelectedProduct: (selectedProduct){
+                                  print('Selected product id is ${selectedProduct.id} and name is ${selectedProduct.productName}');
+                                  this.selectedProduct = selectedProduct;
+                                },
+                              );
                           }
                         }).toList(),
                       );

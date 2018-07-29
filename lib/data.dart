@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:inventory_app/model/description_details.dart';
+import 'package:inventory_app/model/product_count.dart';
 import 'package:inventory_app/model/product_details.dart';
+
+List<List<ProductCount>> p = List();
 
 List<ProductDetails> columnList = [
   ProductDetails("DATA", 0.0),
