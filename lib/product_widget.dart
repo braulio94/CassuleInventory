@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:inventory_app/data.dart';
+import 'package:inventory_app/model/edit_product.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'package:inventory_app/database/database.dart';
+import 'product_row_value.dart';
 
 class ProductCountWidget extends StatefulWidget {
 
@@ -42,8 +43,14 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
     }
   }
 
+  int lastId;
+
   _alterDiffState(){
     setState(() {
+      if(lastId != null){
+        widget.productCount.id;
+      }
+
       widget.productCount.editDiff = !widget.productCount.editDiff;
     });
   }
@@ -57,75 +64,37 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final double rowCountWidth = 80.0;
-    Widget _productValueHolder(String text, {ValueChanged<String> onSubmitted, bool enabled, TextStyle style}){
-      return GestureDetector(
-        onDoubleTap: _alterDiffState,
-        child: Container(
-          height: 50.0,
-          width: rowCountWidth,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(width: 2.0, color: Colors.black12),
-          ),
-          child: TextField(
-            controller: TextEditingController(text: text),
-            enabled: enabled,
-            textAlign: TextAlign.center,
-            style: style,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-            ),
-            onSubmitted: onSubmitted,
-          ),
-        ),
-      );
-    }
-
     return Card(
       margin: EdgeInsets.only(left: 8.0),
       elevation: 0.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _productValueHolder(
-            '${widget.productCount.diff}',
-            onSubmitted: (value){
-              _addDiff(value);
-              widget.database.upsertProduct(widget.productCount, widget.productCount.productName);
-            },
-            enabled: widget.productCount.editDiff,
+          ProductRowValue(
+            value: '${widget.productCount.diff}',
+            holderName: ProductEdit.Diff,
+            product: widget.productCount,
           ),
-          _productValueHolder(
-            '${widget.productCount.missing}',
+          ProductRowValue(
+            value: '${widget.productCount.missing}',
+            holderName: ProductEdit.Missing,
+            product: widget.productCount,
             style: TextStyle(color: widget.productCount.missing.isNegative ? Colors.red : Colors.black),
           ),
-          _productValueHolder(
-            '${widget.productCount.added}',
-            onSubmitted: (value) {
-              setState(() {
-                widget.productCount.added = int.parse(value);
-              });
-              widget.database.upsertProduct(widget.productCount, widget.productCount.productName);
-            },
-            enabled: widget.productCount.today,
+          ProductRowValue(
+            value: '${widget.productCount.added}',
+            holderName: ProductEdit.Added,
+            product: widget.productCount,
           ),
-          _productValueHolder(
-            '${widget.productCount.sold}',
-            onSubmitted: (value){
-              _calculateMissing(value);
-              widget.database.upsertProduct(widget.productCount, widget.productCount.productName);
-            },
-            enabled: widget.productCount.today,
+          ProductRowValue(
+            value: '${widget.productCount.sold}',
+            holderName: ProductEdit.Sold,
+            product: widget.productCount,
           ),
-          _productValueHolder(
-            '${widget.productCount.remaining}',
-            onSubmitted: (value){
-              _calculateDiff(value);
-              widget.database.upsertProduct(widget.productCount, widget.productCount.productName);
-            },
-            enabled: widget.productCount.today,
+          ProductRowValue(
+            value: '${widget.productCount.remaining}',
+            holderName: ProductEdit.Remaining,
+            product: widget.productCount,
           ),
         ],
       ),
