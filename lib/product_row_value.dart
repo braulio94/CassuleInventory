@@ -18,6 +18,16 @@ class ProductRowValue extends StatefulWidget {
 
 class ProductRowValueState extends State<ProductRowValue> {
 
+  bool isEditable(){
+    if(widget.product.edit == ProductEdit.Diff){
+      return false;
+    } else if(widget.product.edit == ProductEdit.Missing){
+      return false;
+    } else {
+      return widget.product.today && widget.product.editDiff && widget.product.edit == widget.holderName;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double rowCountWidth = 80.0;
@@ -29,12 +39,12 @@ class ProductRowValueState extends State<ProductRowValue> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           border: Border.all(width: 2.0, color: Colors.black12),
-          color: widget.product.editDiff && widget.product.edit == widget.holderName ? Colors.red[700] : null,
+          color: isEditable() ? Colors.red[700] : null,
         ),
         child: Text(
           widget.value,
           textAlign: TextAlign.center,
-          style: widget.style  != null ? widget.style : TextStyle(color: widget.product.editDiff && widget.product.edit == widget.holderName ? Colors.white : Colors.black) ,
+          style: widget.style  != null ? widget.style : TextStyle(color: isEditable() ? Colors.white : Colors.black, fontSize: isEditable() ? 20.0 : 15.0, fontWeight: isEditable() ? FontWeight.bold : FontWeight.normal) ,
         ),
       ),
     );
