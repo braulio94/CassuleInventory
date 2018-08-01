@@ -1,11 +1,12 @@
 
 
 import 'package:inventory_app/model/edit_product.dart';
+import 'package:inventory_app/model/inventory_date.dart';
 
 class ProductCount {
 
   int id;
-  String day;
+  int dateId;
   String productName;
   int prevDay;
   int prevDayAdded;
@@ -17,10 +18,10 @@ class ProductCount {
   bool today;
   bool editDiff;
   ProductEdit edit;
+  InventoryDate date;
 
   ProductCount(
       this.productName,
-      this.day,
       this.prevDay,
       this.prevDayAdded,
       this.diff,
@@ -30,14 +31,13 @@ class ProductCount {
       this.remaining,
       this.editDiff,
       this.today,
-      {this.id,
-      this.edit}
+      {this.id, this.dateId, this.edit}
       );
 
   ProductCount.fromDb(Map map)
       : id = map['id'],
         productName = map['productName'],
-        day = map['day'],
+        dateId = map['dateId'],
         prevDay = map['prevDay'],
         prevDayAdded = map['prevDayAdded'],
         diff = map['diff'],
@@ -55,7 +55,7 @@ class ProductCount {
       map["id"] = id;
     }
     map['productName'] = productName;
-    map['day'] = day;
+    map['dateId'] = dateId;
     map['prevDay'] = prevDay;
     map['prevDayAdded'] = prevDayAdded;
     map['diff'] = diff;

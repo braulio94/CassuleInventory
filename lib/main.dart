@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
         if(p.isNotEmpty){
           p.last[i-1].today = false;
         }
-        ProductCount product = ProductCount(productName, DateFormat.yMMMd().format(DateTime.now()), p.isNotEmpty ? p.last[i-1].remaining : 0, p.isNotEmpty ? p.last[i-1].added : 0, 0, 0, 0, 0, 0, false, true);
+        ProductCount product = ProductCount(productName, p.isNotEmpty ? p.last[i-1].remaining : 0, p.isNotEmpty ? p.last[i-1].added : 0, 0, 0, 0, 0, 0, false, true);
         product = await database.upsertProduct(product, productName);
         list.add(product);
         if(p.isNotEmpty){
@@ -158,6 +158,7 @@ class _HomePageState extends State<HomePage> {
                     children: p.map((List<ProductCount> list){
                       return Column(
                         children: list.map((ProductCount count){
+                          print('Product name: ${count.productName} and dateId: ${count.date.date}');
                           switch(count.productName){
 //                            case 'DATA':
 //                              return Card(

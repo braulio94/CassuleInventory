@@ -10,7 +10,7 @@ import 'package:inventory_app/model/inventory_date.dart';
 class ProductDatabase {
 
   static final db_id = "id";
-  static final db_day = "day";
+  static final db_dateId = "dateId";
   static final db_productName = "productName";
   static final db_prevDay = "prevDay";
   static final db_prevDayAdded = "prevDayAdded";
@@ -64,8 +64,8 @@ class ProductDatabase {
         await db.execute(
             "CREATE TABLE $tableName ("
                 "$db_id INTEGER PRIMARY KEY,"
+                "$db_dateId INTEGER,"
                 "$db_productName TEXT,"
-                "$db_day TEXT,"
                 "$db_prevDay INTEGER,"
                 "$db_prevDayAdded INTEGER,"
                 "$db_diff INTEGER,"
@@ -74,7 +74,8 @@ class ProductDatabase {
                 "$db_missing INTEGER,"
                 "$db_remaining INTEGER,"
                 "$db_editDiff BIT,"
-                "$db_today BIT)");
+                "$db_today BIT,"
+                "FOREIGN KEY ($db_dateId) REFERENCES DATA ($db_id))");
       }
 
       print('Database created table $tableName');
@@ -98,6 +99,7 @@ class ProductDatabase {
     var dbClient = await database;
     if(product.id == null){
       product.id = await dbClient.insert(tableName, product.toMap());
+      product.date = await fetchInventoryDate(product.id);
     } else {
       dbClient.update(tableName, product.toMap(), where: "id= ?", whereArgs: [product.id]);
     }
@@ -105,11 +107,12 @@ class ProductDatabase {
     return product;
   }
 
-  Future upsertInventoryDate(String tableName) async {
+  Future<int> upsertInventoryDate(String tableName) async {
     var dbClient = await database;
     InventoryDate inventoryDate = InventoryDate(date: DateTime.now());
     inventoryDate.id = await dbClient.insert(tableName, inventoryDate.toMap());
     print('Saved date id: ${inventoryDate.id} day: ${inventoryDate.date.day} month: ${inventoryDate.date.month}');
+    return inventoryDate.id;
   }
 
   Future<int> updateProduct(ProductCount product, String tableName) async {
@@ -123,7 +126,7 @@ class ProductDatabase {
     await db.rawInsert(
         "INSERT OR REPLACE INTO $tableName ("
             "${product.id},"
-            "${product.day},"
+            "${product.dateId},"
             "${product.productName},"
             "${product.prevDay},"
             "${product.prevDayAdded},"
@@ -136,7 +139,7 @@ class ProductDatabase {
             "${product.editDiff})"
     " VALUES("
             "${product.id},"
-            "${product.day},"
+            "${product.dateId},"
             "${product.productName},"
             "${product.prevDay},"
             "${product.prevDayAdded},"
@@ -164,13 +167,21 @@ class ProductDatabase {
     }).toList();
   }
 
+  Future<InventoryDate> fetchInventoryDate(int id) async {
+    var dbClient = await database;
+    List<Map> results = await dbClient.query("DATA", where: "id = ?", whereArgs: [id]);
+    InventoryDate inventoryDate = InventoryDate.fromMap(results[0]);
+    return inventoryDate;
+  }
+
   Future<ProductCount> getSingleProduct(int id, String tableName) async {
     var dbClient = await database;
     var result = await dbClient.query("$tableName", where: "id = ?", whereArgs: [id]);
-
     if(result.length == 0) return null;
     print("Got data for product  ${result[0]}");
-    return ProductCount.fromDb(result[0]);
+    ProductCount product = ProductCount.fromDb(result[0]);
+    product.date = await fetchInventoryDate(product.id);
+    return product;
   }
 
 }
