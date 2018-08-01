@@ -5,6 +5,7 @@ import 'package:inventory_app/calc_buttons.dart';
 import 'package:inventory_app/data.dart';
 import 'package:inventory_app/model/description_details.dart';
 import 'package:inventory_app/model/edit_product.dart';
+import 'package:inventory_app/model/inventory_date.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'dart:core';
 import 'package:flutter/scheduler.dart';
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   ScrollController _scrollController = new ScrollController();
   ProductDatabase database;
-  List<ProductCount> productList = List();
+  List<InventoryDate> inventoryDateList = List();
   ProductCount selectedProduct;
 
   @override
@@ -48,13 +49,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   setUpList() async {
-    List<ProductCount> list = await database.getProducts("DATA");
+    List<ProductCount> list = await database.getProducts("DESCRIPTION");
     for(ProductCount count in list){
       List<ProductCount> countList = [];
       for(int i = 0; i < columnList.length; i++){
         String tableName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-        ProductCount product =  await database.getSingleProduct(count.id, tableName);
-        countList.add(product);
+        if(tableName != 'DATA'){
+          ProductCount product =  await database.getSingleProduct(count.id, tableName);
+          countList.add(product);
+        }
       }
       setState(() {
         p.add(countList);
@@ -72,14 +75,18 @@ class _HomePageState extends State<HomePage> {
     List<ProductCount> list = [];
     for(int i = 0; i< columnList.length; i++){
       String productName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-      if(p.isNotEmpty){
-        p.last[i].today = false;
-      }
-      ProductCount product = ProductCount(productName, DateFormat.yMMMd().format(DateTime.now()), p.isNotEmpty ? p.last[i].remaining : 0, p.isNotEmpty ? p.last[i].added : 0, 0, 0, 0, 0, 0, false, true);
-      product = await database.upsertProduct(product, productName);
-      list.add(product);
-      if(p.isNotEmpty){
-        database.upsertProduct(p.last[i], productName);
+      if(productName == 'DATA'){
+        database.upsertInventoryDate(productName);
+      } else {
+        if(p.isNotEmpty){
+          p.last[i-1].today = false;
+        }
+        ProductCount product = ProductCount(productName, DateFormat.yMMMd().format(DateTime.now()), p.isNotEmpty ? p.last[i-1].remaining : 0, p.isNotEmpty ? p.last[i-1].added : 0, 0, 0, 0, 0, 0, false, true);
+        product = await database.upsertProduct(product, productName);
+        list.add(product);
+        if(p.isNotEmpty){
+          database.upsertProduct(p.last[i-1], productName);
+        }
       }
     }
     setState(() {
@@ -120,19 +127,19 @@ class _HomePageState extends State<HomePage> {
                         setState(() {
                           switch(selectedProduct.edit){
                             case ProductEdit.Diff:
-                              selectedProduct.diff = value;
+                              //selectedProduct.diff = selectedProduct.diff * 10 + value;
                               break;
                             case ProductEdit.Missing:
-                              selectedProduct.missing = value;
+                              //selectedProduct.missing = selectedProduct.missing * 10 + value;
                               break;
                             case ProductEdit.Added:
-                              selectedProduct.added = value;
+                              selectedProduct.added = selectedProduct.added * 10 + value;
                               break;
                             case ProductEdit.Sold:
-                              selectedProduct.sold = value;
+                              selectedProduct.sold = selectedProduct.sold * 10 + value;
                               break;
                             case ProductEdit.Remaining:
-                              selectedProduct.remaining = value;
+                              selectedProduct.remaining =  selectedProduct.remaining * 10 + value;
                               break;
                           }
                         });
@@ -142,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   width: tableWidth,
-                  padding: EdgeInsets.only(right: 8.0),
+                  padding: EdgeInsets.only(left: 150.0, right: 8.0),
                   child: ListView(
                     physics: BouncingScrollPhysics(),
                     controller: _scrollController,
@@ -152,21 +159,21 @@ class _HomePageState extends State<HomePage> {
                       return Column(
                         children: list.map((ProductCount count){
                           switch(count.productName){
-                            case 'DATA':
-                              return Card(
-                                margin: EdgeInsets.only(left: 8.0),
-                                elevation: 0.0,
-                                child: Container(
-                                  height: 50.0,
-                                  width: 400.0,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: count.today ? Colors.red[700] : null,
-                                    border: Border.all(width: 2.0, color: Colors.black12),
-                                  ),
-                                  child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
-                                ),
-                              );
+//                            case 'DATA':
+//                              return Card(
+//                                margin: EdgeInsets.only(left: 8.0),
+//                                elevation: 0.0,
+//                                child: Container(
+//                                  height: 50.0,
+//                                  width: 400.0,
+//                                  alignment: Alignment.center,
+//                                  decoration: BoxDecoration(
+//                                    color: count.today ? Colors.red[700] : null,
+//                                    border: Border.all(width: 2.0, color: Colors.black12),
+//                                  ),
+//                                  child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
+//                                ),
+//                              );
                             case 'DESCRIPTION':
                               return Container(
                                 margin: EdgeInsets.only(left: 8.0),
@@ -193,7 +200,14 @@ class _HomePageState extends State<HomePage> {
                               return ProductCountWidget(
                                 productCount: count,
                                 database: database,
-                                onSelectedProduct: (selectedProduct){
+                                onSelectedProduct: (selectedProduct, state){
+                                  setState(() {
+                                    for(int i = 0; i< list.length; i++){
+                                      list[i].editDiff = false;
+                                    }
+                                    selectedProduct.edit = state;
+                                    selectedProduct.editDiff = !selectedProduct.editDiff;
+                                  });
                                   print('Selected product id is ${selectedProduct.id} and name is ${selectedProduct.productName}');
                                   this.selectedProduct = selectedProduct;
                                 },

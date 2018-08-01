@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:inventory_app/model/product_count.dart';
-
+import 'package:inventory_app/model/inventory_date.dart';
 
 class ProductDatabase {
 
@@ -48,20 +48,35 @@ class ProductDatabase {
   _onCreate(Database db, int version) async {
     for(int i = 0; i < columnList.length; i++){
       String tableName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-      await db.execute(
-          "CREATE TABLE $tableName ("
-              "$db_id INTEGER PRIMARY KEY,"
-              "$db_productName TEXT,"
-              "$db_day TEXT,"
-              "$db_prevDay INTEGER,"
-              "$db_prevDayAdded INTEGER,"
-              "$db_diff INTEGER,"
-              "$db_added INTEGER,"
-              "$db_sold INTEGER,"
-              "$db_missing INTEGER,"
-              "$db_remaining INTEGER,"
-              "$db_editDiff BIT,"
-              "$db_today BIT)");
+      if(tableName == 'DATA'){
+        await db.execute(
+            "CREATE TABLE $tableName ("
+                "$db_id INTEGER PRIMARY KEY,"
+                "${InventoryDate.date_year} INTEGER,"
+                "${InventoryDate.date_month} INTEGER,"
+                "${InventoryDate.date_day} INTEGER,"
+                "${InventoryDate.date_hour} INTEGER,"
+                "${InventoryDate.date_minute} INTEGER,"
+                "${InventoryDate.date_second} INTEGER,"
+                "${InventoryDate.date_millisecond} INTEGER,"
+                "${InventoryDate.date_microsecond} INTEGER)");
+      } else {
+        await db.execute(
+            "CREATE TABLE $tableName ("
+                "$db_id INTEGER PRIMARY KEY,"
+                "$db_productName TEXT,"
+                "$db_day TEXT,"
+                "$db_prevDay INTEGER,"
+                "$db_prevDayAdded INTEGER,"
+                "$db_diff INTEGER,"
+                "$db_added INTEGER,"
+                "$db_sold INTEGER,"
+                "$db_missing INTEGER,"
+                "$db_remaining INTEGER,"
+                "$db_editDiff BIT,"
+                "$db_today BIT)");
+      }
+
       print('Database created table $tableName');
     }
     print('Database was created');
@@ -88,6 +103,13 @@ class ProductDatabase {
     }
     print('Added Product Date with values ${product.id}' + ' to $tableName');
     return product;
+  }
+
+  Future upsertInventoryDate(String tableName) async {
+    var dbClient = await database;
+    InventoryDate inventoryDate = InventoryDate(date: DateTime.now());
+    inventoryDate.id = await dbClient.insert(tableName, inventoryDate.toMap());
+    print('Saved date id: ${inventoryDate.id} day: ${inventoryDate.date.day} month: ${inventoryDate.date.month}');
   }
 
   Future<int> updateProduct(ProductCount product, String tableName) async {

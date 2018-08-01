@@ -9,7 +9,7 @@ class ProductCountWidget extends StatefulWidget {
 
   final ProductCount productCount;
   final ProductDatabase database;
-  final Function(ProductCount selectedProduct) onSelectedProduct;
+  final Function(ProductCount selectedProduct, ProductEdit state) onSelectedProduct;
 
   ProductCountWidget({this.productCount, this.database, this.onSelectedProduct});
 
@@ -65,16 +65,7 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
   }
 
   void changeProductValue(ProductEdit editState){
-    setState(() {
-      for(int i = 0; i< columnList.length; i++){
-        if(p.isNotEmpty){
-          p.last[i].editDiff = false;
-        }
-      }
-      widget.productCount.edit = editState;
-      widget.productCount.editDiff = !widget.productCount.editDiff;
-    });
-    widget.onSelectedProduct(widget.productCount);
+    widget.onSelectedProduct(widget.productCount, editState);
   }
 
   @override
