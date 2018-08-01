@@ -9,6 +9,7 @@ class InventoryDate {
   static final date_second = 'second';
   static final date_millisecond = 'millisecond';
   static final date_microsecond = 'microsecond';
+  static final db_date_table = "InventoryDate";
 
   int id;
   DateTime date;
@@ -29,7 +30,7 @@ class InventoryDate {
     return map;
   }
 
-  static fromMap(Map map) {
+  static InventoryDate fromMap(Map map) {
     InventoryDate inventoryDate = InventoryDate();
     inventoryDate.id = map['id'];
     int year = map['year'];

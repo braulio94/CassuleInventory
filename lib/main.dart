@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
 
   ScrollController _scrollController = new ScrollController();
   ProductDatabase database;
-  List<InventoryDate> inventoryDateList = List();
   ProductCount selectedProduct;
 
   @override
@@ -54,10 +53,8 @@ class _HomePageState extends State<HomePage> {
       List<ProductCount> countList = [];
       for(int i = 0; i < columnList.length; i++){
         String tableName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-        if(tableName != 'DATA'){
-          ProductCount product =  await database.getSingleProduct(count.id, tableName);
-          countList.add(product);
-        }
+        ProductCount product =  await database.getSingleProduct(count.id, tableName);
+        countList.add(product);
       }
       setState(() {
         p.add(countList);
@@ -73,20 +70,17 @@ class _HomePageState extends State<HomePage> {
 
   void _addNewProduct() async {
     List<ProductCount> list = [];
+    database.upsertInventoryDate();
     for(int i = 0; i< columnList.length; i++){
       String productName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-      if(productName == 'DATA'){
-        database.upsertInventoryDate(productName);
-      } else {
-        if(p.isNotEmpty){
-          p.last[i-1].today = false;
-        }
-        ProductCount product = ProductCount(productName, p.isNotEmpty ? p.last[i-1].remaining : 0, p.isNotEmpty ? p.last[i-1].added : 0, 0, 0, 0, 0, 0, false, true);
-        product = await database.upsertProduct(product, productName);
-        list.add(product);
-        if(p.isNotEmpty){
-          database.upsertProduct(p.last[i-1], productName);
-        }
+      if(p.isNotEmpty){
+        p.last[i].today = false;
+      }
+      ProductCount product = ProductCount(productName, p.isNotEmpty ? p.last[i].remaining : 0, p.isNotEmpty ? p.last[i].added : 0, 0, 0, 0, 0, 0, false, true);
+      product = await database.upsertProduct(product, productName);
+      list.add(product);
+      if(p.isNotEmpty){
+        database.upsertProduct(p.last[i], productName);
       }
     }
     setState(() {
@@ -109,7 +103,9 @@ class _HomePageState extends State<HomePage> {
     double keyboardWidth = screenWidth / 4;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inventario - Julho'),
+        title: GestureDetector(
+          child: Text('Inventario - ${dateMonth(DateTime.now().month)}'),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -123,7 +119,6 @@ class _HomePageState extends State<HomePage> {
                     onNumberPressed: (int value){
                       print('Number pressed is $value');
                       if(selectedProduct != null && selectedProduct.today){
-                        print('Selected product id is ${selectedProduct.id} and name is ${selectedProduct.productName}');
                         setState(() {
                           switch(selectedProduct.edit){
                             case ProductEdit.Diff:
@@ -158,23 +153,23 @@ class _HomePageState extends State<HomePage> {
                     children: p.map((List<ProductCount> list){
                       return Column(
                         children: list.map((ProductCount count){
-                          print('Product name: ${count.productName} and dateId: ${count.date.date}');
                           switch(count.productName){
-//                            case 'DATA':
-//                              return Card(
-//                                margin: EdgeInsets.only(left: 8.0),
-//                                elevation: 0.0,
-//                                child: Container(
-//                                  height: 50.0,
-//                                  width: 400.0,
-//                                  alignment: Alignment.center,
-//                                  decoration: BoxDecoration(
-//                                    color: count.today ? Colors.red[700] : null,
-//                                    border: Border.all(width: 2.0, color: Colors.black12),
-//                                  ),
-//                                  child: Text(count.day, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
-//                                ),
-//                              );
+                            case 'DATA':
+                              String date = '${count.date.date.day} ' + dateMonth(count.date.date.month) + ' ${count.date.date.year}';
+                              return Card(
+                                margin: EdgeInsets.only(left: 8.0),
+                                elevation: 0.0,
+                                child: Container(
+                                  height: 50.0,
+                                  width: 400.0,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: count.today ? Colors.red[700] : null,
+                                    border: Border.all(width: 2.0, color: Colors.black12),
+                                  ),
+                                  child: Text(date, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
+                                ),
+                              );
                             case 'DESCRIPTION':
                               return Container(
                                 margin: EdgeInsets.only(left: 8.0),
@@ -209,7 +204,6 @@ class _HomePageState extends State<HomePage> {
                                     selectedProduct.edit = state;
                                     selectedProduct.editDiff = !selectedProduct.editDiff;
                                   });
-                                  print('Selected product id is ${selectedProduct.id} and name is ${selectedProduct.productName}');
                                   this.selectedProduct = selectedProduct;
                                 },
                               );
