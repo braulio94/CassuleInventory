@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_app/calc_buttons.dart';
+import 'package:inventory_app/calculations.dart';
 import 'package:inventory_app/data.dart';
 import 'package:inventory_app/model/description_details.dart';
 import 'package:inventory_app/model/edit_product.dart';
@@ -122,19 +123,37 @@ class _HomePageState extends State<HomePage> {
                         setState(() {
                           switch(selectedProduct.edit){
                             case ProductEdit.Diff:
-                              //selectedProduct.diff = selectedProduct.diff * 10 + value;
                               break;
                             case ProductEdit.Missing:
-                              //selectedProduct.missing = selectedProduct.missing * 10 + value;
                               break;
                             case ProductEdit.Added:
-                              selectedProduct.added = selectedProduct.added * 10 + value;
+                              selectedProduct.added = value.isNegative ? 0 : selectedProduct.added * 10 + value;
                               break;
                             case ProductEdit.Sold:
-                              selectedProduct.sold = selectedProduct.sold * 10 + value;
+                              selectedProduct.sold = value.isNegative ? 0 : selectedProduct.sold * 10 + value;
                               break;
                             case ProductEdit.Remaining:
-                              selectedProduct.remaining =  selectedProduct.remaining * 10 + value;
+                              selectedProduct.remaining =  value.isNegative ? 0 : selectedProduct.remaining * 10 + value;
+                              break;
+                          }
+                        });
+                      }
+                    },
+                    onCalculateResult: (){
+                      if(selectedProduct != null && selectedProduct.today){
+                        setState(() {
+                          switch(selectedProduct.edit){
+                            case ProductEdit.Diff:
+                              break;
+                            case ProductEdit.Missing:
+                              break;
+                            case ProductEdit.Added:
+                              break;
+                            case ProductEdit.Sold:
+                              calculateMissing(selectedProduct);
+                              break;
+                            case ProductEdit.Remaining:
+                              calculateDiff(selectedProduct);
                               break;
                           }
                         });

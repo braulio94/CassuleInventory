@@ -4,9 +4,8 @@ class CalculatorButtons extends StatelessWidget {
 
   final double keyboardWidth;
   final Function(int number) onNumberPressed;
-
-
-  CalculatorButtons({this.keyboardWidth, this.onNumberPressed});
+  final Function() onCalculateResult;
+  CalculatorButtons({this.keyboardWidth, this.onNumberPressed, this.onCalculateResult});
 
   Widget buildRow(int numberKeyCount, int startNumber,  int numberFlex, int operrationFlex){
     return new Expanded(child:
@@ -22,7 +21,7 @@ class CalculatorButtons extends StatelessWidget {
             color: Colors.white,
             onPressed: (){
             onNumberPressed(from + index);
-          }, child: Text("${from + index}", style: TextStyle(fontSize: 40.0),)),
+          }, child: Text("${from + index}", style: TextStyle(fontSize: 40.0))),
         ),
       );
     }).toList();
@@ -33,11 +32,17 @@ class CalculatorButtons extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: RaisedButton(
-          color: Colors.white,
+          color: value == 'ENTRAR' ? Colors.red[700] : Colors.white,
           onPressed: (){
-          value.contains("0") ? onNumberPressed(int.parse(value)) : null;
+          if(value.contains("0")){
+            onNumberPressed(0);
+          } else if (value == 'C'){
+            onNumberPressed(-1);
+          } else if(value == 'ENTRAR'){
+            onCalculateResult();
+          }
         },
-            child: Text(value, style: TextStyle(fontSize: 40.0),)),
+            child: Text(value, style: TextStyle(fontSize: 40.0, color: value == 'ENTRAR' ? Colors.white : Colors.black))),
       ),
     );
   }
@@ -46,7 +51,7 @@ class CalculatorButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: keyboardWidth,
-      height: 300.0,
+      height: 350.0,
       //color: Colors.red[900],
       child: Column( crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
@@ -58,7 +63,15 @@ class CalculatorButtons extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   buildOperatorButton("0", 1),
-                  buildOperatorButton("ENTRAR", 2)
+                  buildOperatorButton("C", 2)
+                ]
+            ),
+          ),
+          Expanded(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildOperatorButton("ENTRAR", 3)
                 ]
             ),
           ),

@@ -19,51 +19,6 @@ class ProductCountWidget extends StatefulWidget {
 
 class _ProductCountWidgetState extends State<ProductCountWidget> {
 
-  int _currentDay;
-
-  _calculateDiff(String value) {
-    widget.productCount.remaining = int.parse(value);
-    int _prevDayValue = widget.productCount.prevDay + widget.productCount.prevDayAdded;
-    if(_prevDayValue == 0){
-      _currentDay = 0;
-    } else {
-      _currentDay = _prevDayValue - int.parse(value);
-    }
-    setState(() {
-      widget.productCount.diff = _currentDay;
-    });
-  }
-
-  _calculateMissing(String value){
-    widget.productCount.sold = int.parse(value);
-    if(widget.productCount.diff != 0){
-      int missing =  int.parse(value) - widget.productCount.diff;
-      setState(() {
-        widget.productCount.missing = missing;
-        widget.productCount.editDiff = false;
-      });
-    }
-  }
-
-  int lastId;
-
-  _alterDiffState(){
-    setState(() {
-      if(lastId != null){
-        widget.productCount.id;
-      }
-
-      widget.productCount.editDiff = !widget.productCount.editDiff;
-    });
-  }
-
-  _addDiff(String value){
-    setState(() {
-      widget.productCount.diff = int.parse(value);
-      widget.productCount.editDiff = false;
-    });
-  }
-
   void changeProductValue(ProductEdit editState){
     widget.onSelectedProduct(widget.productCount, editState);
   }
@@ -88,7 +43,7 @@ class _ProductCountWidgetState extends State<ProductCountWidget> {
             value: '${widget.productCount.missing}',
             holderName: ProductEdit.Missing,
             product: widget.productCount,
-            style: TextStyle(color: widget.productCount.missing.isNegative ? Colors.red : Colors.black),
+            style: TextStyle(color: widget.productCount.missing.isNegative ? Colors.red : Colors.black, fontWeight: widget.productCount.missing.isNegative ? FontWeight.w900 : FontWeight.normal),
             onPressed: (){
               changeProductValue(ProductEdit.Missing);
             },
