@@ -38,7 +38,7 @@ class ProductRowValueState extends State<ProductRowValue> {
         width: rowCountWidth,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          border: Border.all(width: 2.0, color: Colors.black12),
+          border: Border(top: BorderSide(width: 1.0, color: Colors.black54),bottom: BorderSide(width: 1.0, color: Colors.black54), right: BorderSide(width: 0.5, color: Colors.black54)),
           color: isEditable() ? Colors.red[700] : null,
         ),
         child: Text(

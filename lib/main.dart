@@ -247,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                         width: 150.0,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          border: Border.all(width: 2.0, color: Colors.black12),
+                          border: Border.all(width: 1.0, color: Colors.black54),
                         ),
                         child: Text(details.productName),
                       ),
