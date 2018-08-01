@@ -16,12 +16,12 @@ class CalculatorButtons extends StatelessWidget {
   List<Widget>  buildNumberButtons( int count,int from, int flex) {
     return new Iterable.generate(count, (index) {
       return new Expanded(flex: flex,
-        child: new Padding(padding: const EdgeInsets.all(4.0),
+        child: new Padding(padding: const EdgeInsets.all(3.0),
           child: RaisedButton(
             color: Colors.white,
             onPressed: (){
             onNumberPressed(from + index);
-          }, child: Text("${from + index}", style: TextStyle(fontSize: 40.0))),
+          }, child: Text("${from + index}", style: TextStyle(fontSize: 35.0))),
         ),
       );
     }).toList();
@@ -30,7 +30,7 @@ class CalculatorButtons extends StatelessWidget {
   Widget buildOperatorButton(String value, int flex){
     return Expanded(flex: flex,
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(3.0),
         child: RaisedButton(
           color: value == 'ENTRAR' ? Colors.red[700] : Colors.white,
           onPressed: (){
@@ -42,7 +42,7 @@ class CalculatorButtons extends StatelessWidget {
             onCalculateResult();
           }
         },
-            child: Text(value, style: TextStyle(fontSize: 40.0, color: value == 'ENTRAR' ? Colors.white : Colors.black))),
+            child: Text(value, style: TextStyle(fontSize: 35.0, color: value == 'ENTRAR' ? Colors.white : Colors.black))),
       ),
     );
   }

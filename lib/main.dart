@@ -103,14 +103,15 @@ class _HomePageState extends State<HomePage> {
     double tableWidth = 3 * (screenWidth / 4);
     double keyboardWidth = screenWidth / 4;
     return Scaffold(
-      appBar: AppBar(
-        title: GestureDetector(
-          child: Text('Inventario - ${dateMonth(DateTime.now().month)}'),
-        ),
-        centerTitle: true,
-      ),
+//      appBar: AppBar(
+//        title: GestureDetector(
+//          child: Text('Inventario - ${dateMonth(DateTime.now().month)}'),
+//        ),
+//        centerTitle: true,
+//      ),
       body: Container(
-        margin: EdgeInsets.only(top: statusBarHeight),
+        color: Colors.black87,
+        padding: EdgeInsets.only(top: (statusBarHeight * 2)),
         child: Stack(
               children: <Widget>[
                 Align(
@@ -148,12 +149,15 @@ class _HomePageState extends State<HomePage> {
                             case ProductEdit.Missing:
                               break;
                             case ProductEdit.Added:
+                              database.upsertProduct(selectedProduct, selectedProduct.productName);
                               break;
                             case ProductEdit.Sold:
                               calculateMissing(selectedProduct);
+                              database.upsertProduct(selectedProduct, selectedProduct.productName);
                               break;
                             case ProductEdit.Remaining:
                               calculateDiff(selectedProduct);
+                              database.upsertProduct(selectedProduct, selectedProduct.productName);
                               break;
                           }
                         });
@@ -200,6 +204,7 @@ class _HomePageState extends State<HomePage> {
                                       width: 80.0,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
+                                        color: Colors.grey[200],
                                         border: Border.all(width: 2.0, color: Colors.black12),
                                       ),
                                       child: IconButton(
