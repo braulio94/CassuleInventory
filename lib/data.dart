@@ -49,7 +49,7 @@ String dateMonth(int monthId) {
   return month;
 }
 
-List<ProductDetails> columnList = [
+List<ProductDetails> softDrinkList = [
   ProductDetails("DATA", 0.0),
   ProductDetails("DESCRIPTION", 0.0),
   ProductDetails("AGUA NATURAL", 200.0),
@@ -64,6 +64,42 @@ List<ProductDetails> columnList = [
   ProductDetails("GINGER ALE", 250.0),
   ProductDetails("NUTRY", 700.0),
 ];
+
+
+List<ProductDetails> beerList = [
+  ProductDetails("DATA", 0.0),
+  ProductDetails("DESCRIPTION", 0.0),
+  ProductDetails("CUCA PRETA", 250.0),
+  ProductDetails("CUCA LATA", 250.0),
+  ProductDetails("CUCA GARRAFA", 200.0),
+  ProductDetails("NOCAL GARRAFA", 200.0),
+  ProductDetails("NOCAL LATA", 250.0),
+  ProductDetails("EKA GARRAFA", 200.0),
+  ProductDetails("EKA LATA", 200.0),
+  ProductDetails("SMINORFF", 500.0),
+  ProductDetails("DOPEL", 300.0),
+  ProductDetails("BOOSTER GARRAFA", 250.0),
+  ProductDetails("BOOSTER LATA", 250.0),
+  ProductDetails("VT COPO", 500.0),
+];
+
+List<ProductDetails> foodList = [
+  ProductDetails("DATA", 0.0),
+  ProductDetails("DESCRIPTION", 0.0),
+  ProductDetails("HAMBURGUER", 80.0),
+  ProductDetails("PAO HAMBURGUER", 40.0),
+  ProductDetails("MASSA PIZZA", 1000.0),
+  ProductDetails("CAIXA PIZZA", 300.0),
+  ProductDetails("TIGELA TW GRANDE", 150.0),
+  ProductDetails("TIGELA TW PEQUENA", 150.0),
+  ProductDetails("BIFE CARNE", 380.0),
+  ProductDetails("BIFE ISCA", 150.0),
+  ProductDetails("BIFE FRANGO", 300.0),
+  ProductDetails("FEBRAS", 400.0),
+  ProductDetails("OVOS", 45.0),
+  ProductDetails("PICANHA", 600.0),
+];
+
 
 List<DescriptionDetail> descriptionIcons = [
   DescriptionDetail(Icons.compare_arrows, 'Diferenca', Colors.orange),

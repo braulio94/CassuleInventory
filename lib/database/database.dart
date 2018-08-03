@@ -47,8 +47,30 @@ class ProductDatabase {
 
   _onCreate(Database db, int version) async {
     _createInventoryDateTable(db);
-    for (int i = 0; i < columnList.length; i++) {
-      String tableName = columnList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+    _createSoftDrinkTable(db);
+    _createBeerTables(db);
+    _createFoodTables(db);
+    print('Database was created');
+  }
+
+  _createInventoryDateTable(Database db) async {
+    await db.execute(
+        "CREATE TABLE ${InventoryDate.db_date_table} ("
+            "$db_id INTEGER PRIMARY KEY,"
+            "${InventoryDate.date_year} INTEGER,"
+            "${InventoryDate.date_month} INTEGER,"
+            "${InventoryDate.date_day} INTEGER,"
+            "${InventoryDate.date_hour} INTEGER,"
+            "${InventoryDate.date_minute} INTEGER,"
+            "${InventoryDate.date_second} INTEGER,"
+            "${InventoryDate.date_millisecond} INTEGER,"
+            "${InventoryDate.date_microsecond} INTEGER)");
+    print('${InventoryDate.db_date_table} table created');
+  }
+
+  _createSoftDrinkTable(Database db) async {
+    for (int i = 0; i < softDrinkList.length; i++) {
+      String tableName = softDrinkList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
       await db.execute(
           "CREATE TABLE $tableName ("
               "$db_id INTEGER PRIMARY KEY,"
@@ -66,22 +88,54 @@ class ProductDatabase {
               "FOREIGN KEY ($db_dateId) REFERENCES ${InventoryDate.db_date_table} ($db_id))");
       print('Database created table $tableName');
     }
-    print('Database was created');
   }
 
-  _createInventoryDateTable(Database db) async {
-    await db.execute(
-        "CREATE TABLE ${InventoryDate.db_date_table} ("
-            "$db_id INTEGER PRIMARY KEY,"
-            "${InventoryDate.date_year} INTEGER,"
-            "${InventoryDate.date_month} INTEGER,"
-            "${InventoryDate.date_day} INTEGER,"
-            "${InventoryDate.date_hour} INTEGER,"
-            "${InventoryDate.date_minute} INTEGER,"
-            "${InventoryDate.date_second} INTEGER,"
-            "${InventoryDate.date_millisecond} INTEGER,"
-            "${InventoryDate.date_microsecond} INTEGER)");
-    print('${InventoryDate.db_date_table} table created');
+  _createBeerTables(Database db) async {
+    for (int i = 0; i < beerList.length; i++) {
+      String tableName = beerList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      try{
+        await db.execute(
+            "CREATE TABLE $tableName ("
+                "$db_id INTEGER PRIMARY KEY,"
+                "$db_dateId INTEGER,"
+                "$db_productName TEXT,"
+                "$db_prevDay INTEGER,"
+                "$db_prevDayAdded INTEGER,"
+                "$db_diff INTEGER,"
+                "$db_added INTEGER,"
+                "$db_sold INTEGER,"
+                "$db_missing INTEGER,"
+                "$db_remaining INTEGER,"
+                "$db_editDiff BIT,"
+                "$db_today BIT,"
+                "FOREIGN KEY ($db_dateId) REFERENCES ${InventoryDate.db_date_table} ($db_id))");
+      } catch(e){}
+      print('Database created table $tableName');
+    }
+  }
+
+  _createFoodTables(Database db) async {
+    for (int i = 0; i < foodList.length; i++) {
+      String tableName = foodList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      try{
+        await db.execute(
+            "CREATE TABLE $tableName ("
+                "$db_id INTEGER PRIMARY KEY,"
+                "$db_dateId INTEGER,"
+                "$db_productName TEXT,"
+                "$db_prevDay INTEGER,"
+                "$db_prevDayAdded INTEGER,"
+                "$db_diff INTEGER,"
+                "$db_added INTEGER,"
+                "$db_sold INTEGER,"
+                "$db_missing INTEGER,"
+                "$db_remaining INTEGER,"
+                "$db_editDiff BIT,"
+                "$db_today BIT,"
+                "FOREIGN KEY ($db_dateId) REFERENCES ${InventoryDate.db_date_table} ($db_id))");
+      } catch(e){}
+      print('Database created table $tableName');
+    }
   }
 
   Future<int> addProduct(ProductCount product, String tableName) async {

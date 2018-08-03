@@ -19,6 +19,5 @@ calculateMissing(ProductCount productCount){
   if(productCount.diff != 0){
     int missing =  productCount.sold - productCount.diff;
     productCount.missing = missing;
-    productCount.editDiff = false;
   }
 }

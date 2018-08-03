@@ -3,7 +3,7 @@ import 'package:inventory_app/data.dart';
 import 'package:inventory_app/model/edit_product.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'package:inventory_app/database/database.dart';
-import 'product_row_value.dart';
+import 'product_row.dart';
 
 class ProductCountWidget extends StatefulWidget {
 
