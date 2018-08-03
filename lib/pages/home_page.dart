@@ -241,9 +241,12 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNewProduct,
-        child: Icon(Icons.add, color: Colors.white),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 80.0),
+        child: FloatingActionButton(
+          onPressed: _addNewProduct,
+          child: Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }
