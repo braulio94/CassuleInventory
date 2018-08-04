@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_app/widgets/calc_buttons.dart';
 import 'package:inventory_app/calculations.dart';
-import 'package:inventory_app/data.dart';
+import 'package:inventory_app/database/data.dart';
 import 'package:inventory_app/model/description_details.dart';
 import 'package:inventory_app/model/edit_product.dart';
 import 'package:inventory_app/model/product_count.dart';
@@ -36,7 +36,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   setUpList() async {
-    List<ProductCount> list = await widget.database.getProducts("DESCRIPTION");
+    setState(() {
+      p.clear();
+    });
+    List<ProductCount> list = await widget.database.getProducts(widget.productDetailsList[3].productName.replaceAll(RegExp(r"\s+\b|\b\s"), ""));
     for(ProductCount count in list){
       List<ProductCount> countList = [];
       for(int i = 0; i < widget.productDetailsList.length; i++){
@@ -48,6 +51,13 @@ class _HomePageState extends State<HomePage> {
         p.add(countList);
       });
     }
+  }
+
+
+  @override
+  void didUpdateWidget(HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setUpList();
   }
 
   void _addNewProduct() async {
@@ -160,61 +170,60 @@ class _HomePageState extends State<HomePage> {
                 children: p.map((List<ProductCount> list){
                   return Column(
                     children: list.map((ProductCount count){
-                      switch(count.productName){
-                        case 'DATA':
-                          String date = '${count.date.date.day} ' + dateMonth(count.date.date.month) + ' ${count.date.date.year}';
-                          return Card(
-                            margin: EdgeInsets.only(left: 8.0),
-                            elevation: 0.0,
-                            child: Container(
-                              height: 50.0,
-                              width: 400.0,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: count.today ? Colors.red[700] : null,
-                                border: Border.all(width: 2.0, color: Colors.black12),
-                              ),
-                              child: Text(date, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
+                      if(count.productName == 'DATA' || count.productName == 'DATA1' || count.productName == 'DATA2'){
+                        String date = '${count.date.date.day} ' + dateMonth(count.date.date.month) + ' ${count.date.date.year}';
+                        return Card(
+                          margin: EdgeInsets.only(left: 8.0),
+                          elevation: 0.0,
+                          child: Container(
+                            height: 50.0,
+                            width: 400.0,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: count.today ? Colors.red[700] : null,
+                              border: Border.all(width: 2.0, color: Colors.black12),
                             ),
-                          );
-                        case 'DESCRIPTION':
-                          return Container(
-                            margin: EdgeInsets.only(left: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: descriptionIcons.map((DescriptionDetail desc){
-                                return Container(
-                                  height: 50.0,
-                                  width: 80.0,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    border: Border.all(width: 2.0, color: Colors.black12),
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(desc.icon, color: count.today ? desc.color : null),
-                                    tooltip: desc.tooptip,
-                                    onPressed: null,
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          );
-                        default:
-                          return ProductCountWidget(
-                            productCount: count,
-                            database: widget.database,
-                            onSelectedProduct: (selectedProduct, state){
-                              setState(() {
-                                for(int i = 0; i< list.length; i++){
-                                  list[i].editDiff = false;
-                                }
-                                selectedProduct.edit = state;
-                                selectedProduct.editDiff = !selectedProduct.editDiff;
-                              });
-                              this.selectedProduct = selectedProduct;
-                            },
-                          );
+                            child: Text(date, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
+                          ),
+                        );
+                      } else if (count.productName == 'DESCRIPTION' || count.productName == 'DESCRIPTION1' || count.productName == 'DESCRIPTION2'){
+                        return Container(
+                          margin: EdgeInsets.only(left: 8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: descriptionIcons.map((DescriptionDetail desc){
+                              return Container(
+                                height: 50.0,
+                                width: 80.0,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  border: Border.all(width: 2.0, color: Colors.black12),
+                                ),
+                                child: IconButton(
+                                  icon: Icon(desc.icon, color: count.today ? desc.color : null),
+                                  tooltip: desc.tooptip,
+                                  onPressed: null,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      } else {
+                        return ProductCountWidget(
+                          productCount: count,
+                          database: widget.database,
+                          onSelectedProduct: (selectedProduct, state){
+                            setState(() {
+                              for(int i = 0; i< list.length; i++){
+                                list[i].editDiff = false;
+                              }
+                              selectedProduct.edit = state;
+                              selectedProduct.editDiff = !selectedProduct.editDiff;
+                            });
+                            this.selectedProduct = selectedProduct;
+                          },
+                        );
                       }
                     }).toList(),
                   );
@@ -223,6 +232,14 @@ class _HomePageState extends State<HomePage> {
             ),
             Column(
               children: widget.productDetailsList.map((ProductDetails details){
+                String productName;
+                if(details.productName == 'DATA1' || details.productName == 'DATA2'){
+                  productName = 'DATA';
+                } else if (details.productName == 'DESCRIPTION' || details.productName == 'DESCRIPTION1' || details.productName == 'DESCRIPTION2'){
+                  productName = 'DESCRIÇÃO';
+                } else {
+                  productName = details.productName;
+                }
                 return Card(
                   elevation: 4.0,
                   margin: EdgeInsets.all(0.0),
@@ -233,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       border: Border.all(width: 1.0, color: Colors.black54),
                     ),
-                    child: Text(details.productName),
+                    child: Text(productName),
                   ),
                 );
               }).toList(),

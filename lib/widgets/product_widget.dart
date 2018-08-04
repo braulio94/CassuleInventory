@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inventory_app/data.dart';
+import 'package:inventory_app/database/data.dart';
 import 'package:inventory_app/model/edit_product.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'package:inventory_app/database/database.dart';

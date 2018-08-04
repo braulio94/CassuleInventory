@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:inventory_app/model/category.dart';
 import 'package:inventory_app/model/description_details.dart';
 import 'package:inventory_app/model/product_count.dart';
 import 'package:inventory_app/model/product_details.dart';
@@ -67,8 +68,8 @@ List<ProductDetails> softDrinkList = [
 
 
 List<ProductDetails> beerList = [
-  ProductDetails("DATA", 0.0),
-  ProductDetails("DESCRIPTION", 0.0),
+  ProductDetails("DATA1", 0.0),
+  ProductDetails("DESCRIPTION1", 0.0),
   ProductDetails("CUCA PRETA", 250.0),
   ProductDetails("CUCA LATA", 250.0),
   ProductDetails("CUCA GARRAFA", 200.0),
@@ -84,8 +85,8 @@ List<ProductDetails> beerList = [
 ];
 
 List<ProductDetails> foodList = [
-  ProductDetails("DATA", 0.0),
-  ProductDetails("DESCRIPTION", 0.0),
+  ProductDetails("DATA2", 0.0),
+  ProductDetails("DESCRIPTION2", 0.0),
   ProductDetails("HAMBURGUER", 80.0),
   ProductDetails("PAO HAMBURGUER", 40.0),
   ProductDetails("MASSA PIZZA", 1000.0),
@@ -98,6 +99,21 @@ List<ProductDetails> foodList = [
   ProductDetails("FEBRAS", 400.0),
   ProductDetails("OVOS", 45.0),
   ProductDetails("PICANHA", 600.0),
+];
+
+List<Category> allCategories = <Category>[
+  Category(
+    title: 'REFRIGEIRANTES & AGUA',
+    list: softDrinkList,
+  ),
+  Category(
+    title: 'CERVEJAS',
+    list: beerList,
+  ),
+  Category(
+    title: 'COMIDA',
+    list: foodList,
+  ),
 ];
 
 

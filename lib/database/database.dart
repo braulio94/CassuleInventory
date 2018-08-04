@@ -1,4 +1,4 @@
-import 'package:inventory_app/data.dart';
+import 'package:inventory_app/database/data.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
