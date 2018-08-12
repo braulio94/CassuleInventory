@@ -4,6 +4,7 @@ import 'package:inventory_app/database/data.dart';
 import 'package:inventory_app/database/database.dart';
 import 'package:inventory_app/model/category.dart';
 import 'package:inventory_app/pages/home_page.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
 import 'package:inventory_app/widgets/backdrop.dart';
@@ -12,6 +13,11 @@ import 'package:inventory_app/widgets/backdrop.dart';
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
+
+  MyApp(){
+    SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.landscapeLeft]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,6 +41,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   ProductDatabase database;
   AnimationController _controller;
   Category _category = allCategories[0];
+  int selectedMonth;
 
   @override
   void initState() {
@@ -151,12 +158,41 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               icon: Icon(_backdropPanelVisible ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up, size: 30.0),
               title: Text(_category.title, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
               secondTitle:  Text(dateMonth(DateTime.now().month).toUpperCase(), style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-              child: Container(
-                padding: EdgeInsets.all(8.0),
-                width: width,
-                child: Column(
-                  children: backdropItems,
-                ),
+              child: Row(
+                children: [
+                  Container(
+                    width: width,
+                    height: double.infinity,
+                    child: Column(
+                      children: backdropItems,
+                    ),
+                  ),
+                  Expanded(child: Container()),
+                  Container(
+                    height: double.infinity,
+                    width: width,
+                    child: ListView.builder(
+                      itemCount: 12,
+                      itemBuilder: (context, index){
+                        return Material(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                          ),
+                          color: Colors.transparent,
+                          child: ListTile(
+                            title: Text(dateMonth(index).toUpperCase()),
+                            selected: false,
+                            onTap: () {
+                              setState(() {
+                                _toggleBackdropPanelVisibility();
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

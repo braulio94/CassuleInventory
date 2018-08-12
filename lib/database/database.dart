@@ -192,7 +192,7 @@ class ProductDatabase {
     var dbClient = await database;
     if(product.id == null){
       product.id = await dbClient.insert(tableName, product.toMap());
-      product.date = await fetchInventoryDate(product.id);
+      product.date = await fetchInventoryDate(product.dateId);
     } else {
       dbClient.update(tableName, product.toMap(), where: "id= ?", whereArgs: [product.id]);
     }
@@ -200,12 +200,12 @@ class ProductDatabase {
     return product;
   }
 
-  Future<InventoryDate> upsertInventoryDate() async {
+  Future<int> upsertInventoryDate() async {
     var dbClient = await database;
     InventoryDate inventoryDate = InventoryDate(date: DateTime.now());
     inventoryDate.id = await dbClient.insert(InventoryDate.db_date_table, inventoryDate.toMap());
     print('Saved date id: ${inventoryDate.id} day: ${inventoryDate.date.day} month: ${inventoryDate.date.month}');
-    return inventoryDate;
+    return inventoryDate.id;
   }
 
   Future closeDb() async {
@@ -221,10 +221,9 @@ class ProductDatabase {
     }).toList();
   }
 
-  Future<List<InventoryDate>> getInventoryDates(String tableName) async {
+  Future getInventoryDates(String tableName, {int year, int month, int day}) async {
     var dbClient = await database;
-    List<Map> result = await dbClient.query("$tableName");
-
+    List<Map> result = await dbClient.query("$tableName", where: "month = ?", whereArgs: [month]);
     return result.map((Map m){
       return InventoryDate.fromMap(m);
     }).toList();
@@ -243,7 +242,7 @@ class ProductDatabase {
     if(result.length == 0) return null;
     print("Got data for product  ${result[0]}");
     ProductCount product = ProductCount.fromDb(result[0]);
-    product.date = await fetchInventoryDate(product.id);
+    product.date = await fetchInventoryDate(product.dateId);
     return product;
   }
 

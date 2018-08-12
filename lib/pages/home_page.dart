@@ -17,8 +17,9 @@ class HomePage extends StatefulWidget {
 
   final ProductDatabase database;
   final List<ProductDetails> productDetailsList;
+  final int selectedMonth;
 
-  HomePage({Key key, this.database, this.productDetailsList}) : super(key: key);
+  HomePage({Key key, this.database, this.productDetailsList, this.selectedMonth = 9}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -45,10 +46,14 @@ class _HomePageState extends State<HomePage> {
       for(int i = 0; i < widget.productDetailsList.length; i++){
         String tableName = widget.productDetailsList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
         ProductCount product =  await widget.database.getSingleProduct(count.id, tableName);
-        countList.add(product);
+        if(product.date.date.month == widget.selectedMonth){
+          countList.add(product);
+        }
       }
       setState(() {
-        p.add(countList);
+        if(countList.isNotEmpty){
+          p.add(countList);
+        }
       });
     }
   }
@@ -62,13 +67,13 @@ class _HomePageState extends State<HomePage> {
 
   void _addNewProduct() async {
     List<ProductCount> list = [];
-    widget.database.upsertInventoryDate();
+    int dateId = await widget.database.upsertInventoryDate();
     for(int i = 0; i< widget.productDetailsList.length; i++){
       String productName = widget.productDetailsList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
       if(p.isNotEmpty){
         p.last[i].today = false;
       }
-      ProductCount product = ProductCount(productName, p.isNotEmpty ? p.last[i].remaining : 0, p.isNotEmpty ? p.last[i].added : 0, 0, 0, 0, 0, 0, false, true);
+      ProductCount product = ProductCount(productName, p.isNotEmpty ? p.last[i].remaining : 0, p.isNotEmpty ? p.last[i].added : 0, 0, 0, 0, 0, 0, false, true, dateId: dateId);
       product = await widget.database.upsertProduct(product, productName);
       list.add(product);
       if(p.isNotEmpty){

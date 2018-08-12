@@ -46,6 +46,9 @@ String dateMonth(int monthId) {
     case 12:
       month = 'Dezembro';
       break;
+    case 0:
+      month = 'Dezembro';
+      break;
   }
   return month;
 }
