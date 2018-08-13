@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
 
   MyApp(){
     SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.landscapeLeft]);
+    SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   @override
@@ -41,7 +42,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   ProductDatabase database;
   AnimationController _controller;
   Category _category = allCategories[0];
-  int selectedMonth;
+  int _selectedMonth = DateTime.now().month;
 
   @override
   void initState() {
@@ -120,17 +121,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     final List<Widget> backdropItems = allCategories.map<Widget>((Category category) {
       final bool selected = category == _category;
-      return new Material(
-        shape: const RoundedRectangleBorder(
-          borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
-        ),
-        color: selected ? Colors.white.withOpacity(0.25) : Colors.transparent,
-        child: ListTile(
-          title: Text(category.title),
-          selected: selected,
-          onTap: () {
-            _changeCategory(category);
-          },
+      return Container(
+        margin: EdgeInsets.only(left: 16.0),
+        child: new Material(
+          shape: const RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+          ),
+          color: selected ? Colors.white.withOpacity(0.25) : Colors.transparent,
+          child: ListTile(
+            title: Text(category.title),
+            selected: selected,
+            onTap: () {
+              _changeCategory(category);
+            },
+          ),
         ),
       );
     }).toList();
@@ -140,7 +144,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       child: Stack(
         children: <Widget>[
           GestureDetector(
-            child: HomePage(database: database, productDetailsList: _category.list),
+            child: HomePage(selectedMonth: _selectedMonth, database: database, productDetailsList: _category.list),
             behavior: HitTestBehavior.opaque,
             onTap: (){
               if(_backdropPanelVisible){
@@ -157,7 +161,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               onVerticalDragEnd: _handleDragEnd,
               icon: Icon(_backdropPanelVisible ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up, size: 30.0),
               title: Text(_category.title, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-              secondTitle:  Text(dateMonth(DateTime.now().month).toUpperCase(), style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+              secondTitle:  Text(dateMonth(_selectedMonth).toUpperCase(), style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
               child: Row(
                 children: [
                   Container(
@@ -169,6 +173,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ),
                   Expanded(child: Container()),
                   Container(
+                    margin: EdgeInsets.only(right: 16.0),
                     height: double.infinity,
                     width: width,
                     child: ListView.builder(
@@ -180,11 +185,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           ),
                           color: Colors.transparent,
                           child: ListTile(
-                            title: Text(dateMonth(index).toUpperCase()),
+                            title: Text(dateMonth(index).toUpperCase(), style: TextStyle(color: index == _selectedMonth ? Colors.red : Colors.black), textAlign: TextAlign.end),
                             selected: false,
                             onTap: () {
                               setState(() {
                                 _toggleBackdropPanelVisibility();
+                                _selectedMonth = index;
                               });
                             },
                           ),

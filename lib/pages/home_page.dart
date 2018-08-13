@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
   final List<ProductDetails> productDetailsList;
   final int selectedMonth;
 
-  HomePage({Key key, this.database, this.productDetailsList, this.selectedMonth = 9}) : super(key: key);
+  HomePage({Key key, this.database, this.productDetailsList, this.selectedMonth}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
