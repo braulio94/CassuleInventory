@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
 //      ),
       body: Container(
         color: Colors.black87,
-        padding: EdgeInsets.only(top: (statusBarHeight * 2)),
+        //padding: EdgeInsets.only(top: (statusBarHeight * 2)),
         child: Stack(
           children: <Widget>[
             Align(

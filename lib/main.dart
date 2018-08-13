@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 
   MyApp(){
     SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.landscapeLeft]);
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[SystemUiOverlay.bottom]);
   }
 
   @override
@@ -139,6 +139,28 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       );
     }).toList();
 
+    List<Widget> monthList() {
+      List<Widget> list = [];
+      for(int index = 1; index < 13; index++){
+        list.add(
+            Container(
+              color: Colors.transparent,
+              child: ListTile(
+                title: Text(dateMonth(index).toUpperCase(), style: TextStyle(color: index == _selectedMonth ? Colors.red : Colors.black), textAlign: TextAlign.end),
+                selected: false,
+                onTap: () {
+                  setState(() {
+                    _toggleBackdropPanelVisibility();
+                    _selectedMonth = index;
+                  });
+                },
+              ),
+            ),
+        );
+      }
+      return list;
+    }
+
     return Container(
       key: _globalKey,
       child: Stack(
@@ -176,26 +198,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     margin: EdgeInsets.only(right: 16.0),
                     height: double.infinity,
                     width: width,
-                    child: ListView.builder(
-                      itemCount: 12,
-                      itemBuilder: (context, index){
-                        return Material(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                          ),
-                          color: Colors.transparent,
-                          child: ListTile(
-                            title: Text(dateMonth(index).toUpperCase(), style: TextStyle(color: index == _selectedMonth ? Colors.red : Colors.black), textAlign: TextAlign.end),
-                            selected: false,
-                            onTap: () {
-                              setState(() {
-                                _toggleBackdropPanelVisibility();
-                                _selectedMonth = index;
-                              });
-                            },
-                          ),
-                        );
-                      },
+                    child: ListView(
+                      children: monthList(),
                     ),
                   ),
                 ],
