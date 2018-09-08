@@ -31,7 +31,7 @@ class ProductCount {
       this.remaining,
       this.editDiff,
       this.today,
-      {this.id, this.dateId, this.edit}
+      {this.id, this.dateId, this.edit, this.date}
       );
 
   ProductCount.fromDb(Map map)

@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       p.clear();
     });
-    List<ProductCount> list = await widget.database.getProducts(widget.productDetailsList[3].productName.replaceAll(RegExp(r"\s+\b|\b\s"), ""));
+    List<ProductCount> list = await widget.database.getProducts(widget.productDetailsList[1].productName.replaceAll(RegExp(r"\s+\b|\b\s"), ""));
     for(ProductCount count in list){
       List<ProductCount> countList = [];
       for(int i = 0; i < widget.productDetailsList.length; i++){
@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                 children: p.map((List<ProductCount> list){
                   return Column(
                     children: list.map((ProductCount count){
-                      if(count.productName == 'DATA' || count.productName == 'DATA1' || count.productName == 'DATA2'){
+                      if(count.productName == 'DATA' || count.productName == 'DATA1' || count.productName == 'DATA2' || count.productName == 'DATA3'){
                         String date = '${count.date.date.day} ' + dateMonth(count.date.date.month) + ' ${count.date.date.year}';
                         return Card(
                           margin: EdgeInsets.only(left: 8.0),
@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                             child: Text(date, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: count.today ? Colors.white : null)),
                           ),
                         );
-                      } else if (count.productName == 'DESCRIPTION' || count.productName == 'DESCRIPTION1' || count.productName == 'DESCRIPTION2'){
+                      } else if (count.productName == 'DESCRIPTION' || count.productName == 'DESCRIPTION1' || count.productName == 'DESCRIPTION2' || count.productName == 'DESCRIPTION3'){
                         return Container(
                           margin: EdgeInsets.only(left: 8.0),
                           child: Row(
@@ -238,9 +238,9 @@ class _HomePageState extends State<HomePage> {
             Column(
               children: widget.productDetailsList.map((ProductDetails details){
                 String productName;
-                if(details.productName == 'DATA1' || details.productName == 'DATA2'){
+                if(details.productName == 'DATA1' || details.productName == 'DATA2' || details.productName == 'DATA3'){
                   productName = 'DATA';
-                } else if (details.productName == 'DESCRIPTION' || details.productName == 'DESCRIPTION1' || details.productName == 'DESCRIPTION2'){
+                } else if (details.productName == 'DESCRIPTION' || details.productName == 'DESCRIPTION1' || details.productName == 'DESCRIPTION2' || details.productName == 'DESCRIPTION3'){
                   productName = 'DESCRIÇÃO';
                 } else {
                   productName = details.productName;

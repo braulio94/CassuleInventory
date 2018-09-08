@@ -63,6 +63,7 @@ List<ProductDetails> softDrinkList = [
   ProductDetails("SPEED", 300.0),
   ProductDetails("AGUA TONICA", 250.0),
   ProductDetails("GINGER ALE", 250.0),
+  ProductDetails("BLUE GINGIBRE", 250.0),
   ProductDetails("NUTRY", 700.0),
 ];
 
@@ -101,6 +102,12 @@ List<ProductDetails> foodList = [
   ProductDetails("PICANHA", 600.0),
 ];
 
+List<ProductDetails> otherList = [
+  ProductDetails("DATA3", 0.0),
+  ProductDetails("DESCRIPTION3", 0.0),
+  ProductDetails("SOPA", 700.0),
+];
+
 List<Category> allCategories = <Category>[
   Category(
     title: 'REFRIGEIRANTES & AGUA',
@@ -113,6 +120,10 @@ List<Category> allCategories = <Category>[
   Category(
     title: 'COMIDA',
     list: foodList,
+  ),
+  Category(
+    title: 'OUTROS',
+    list: otherList,
   ),
 ];
 

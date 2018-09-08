@@ -40,7 +40,7 @@ class ProductDatabase {
   Future<Database> initDB() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, "inventory.db");
-    var thDB = await openDatabase(path, version: 1, onCreate: _onCreate);
+    var thDB = await openDatabase(path, version: 2, onCreate: _onCreate);
     return thDB;
   }
 
@@ -50,6 +50,7 @@ class ProductDatabase {
     _createSoftDrinkTable(db);
     _createBeerTables(db);
     _createFoodTables(db);
+    _createOtherTables(db);
     print('Database was created');
   }
 
@@ -117,6 +118,30 @@ class ProductDatabase {
   _createFoodTables(Database db) async {
     for (int i = 0; i < foodList.length; i++) {
       String tableName = foodList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      try{
+        await db.execute(
+            "CREATE TABLE $tableName ("
+                "$db_id INTEGER PRIMARY KEY,"
+                "$db_dateId INTEGER,"
+                "$db_productName TEXT,"
+                "$db_prevDay INTEGER,"
+                "$db_prevDayAdded INTEGER,"
+                "$db_diff INTEGER,"
+                "$db_added INTEGER,"
+                "$db_sold INTEGER,"
+                "$db_missing INTEGER,"
+                "$db_remaining INTEGER,"
+                "$db_editDiff BIT,"
+                "$db_today BIT,"
+                "FOREIGN KEY ($db_dateId) REFERENCES ${InventoryDate.db_date_table} ($db_id))");
+      } catch(e){}
+      print('Database created table $tableName');
+    }
+  }
+
+  _createOtherTables(Database db) async {
+    for (int i = 0; i < otherList.length; i++) {
+      String tableName = otherList[i].productName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
       try{
         await db.execute(
             "CREATE TABLE $tableName ("
@@ -214,8 +239,11 @@ class ProductDatabase {
   }
 
   Future<List<ProductCount>> getProducts(String tableName) async {
-    var dbClient = await database;
-    List<Map> result = await dbClient.query("$tableName");
+    List<Map> result = [];
+    try {
+      var dbClient = await database;
+      result = await dbClient.query("$tableName");
+    } catch(e){}
     return result.map((Map m){
       return ProductCount.fromDb(m);
     }).toList();
@@ -237,12 +265,16 @@ class ProductDatabase {
   }
 
   Future<ProductCount> getSingleProduct(int id, String tableName) async {
-    var dbClient = await database;
-    var result = await dbClient.query("$tableName", where: "id = ?", whereArgs: [id]);
-    if(result.length == 0) return null;
-    print("Got data for product  ${result[0]}");
-    ProductCount product = ProductCount.fromDb(result[0]);
-    product.date = await fetchInventoryDate(product.dateId);
+    ProductCount product;
+    try {
+      var dbClient = await database;
+      var result = await dbClient.query("$tableName", where: "id = ?", whereArgs: [id]);
+      if(result.length == 0) return null;
+      product = ProductCount.fromDb(result[0]);
+      product.date = await fetchInventoryDate(product.dateId);
+    }catch(e){
+      product = ProductCount(tableName, 0,0,0,0,0,0,0,false, false, id: id, date: InventoryDate(date: DateTime.now()));
+    }
     return product;
   }
 
