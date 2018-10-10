@@ -24,6 +24,15 @@ class _ProductDetailState extends State<ProductDetailPage> {
 
   setUpList() async {
     List<ProductCount> list = await widget.database.getProducts(widget.detail.productName.replaceAll(RegExp(r"\s+\b|\b\s"), ""));
+    List<int> missingList = [];
+    List<int> soldList = [];
+    List<int> addedList = [];
+    list.forEach((product){
+      print('Added missing: ${product.missing}');
+      missingList.add(product.missing);
+    });
+    var sum = missingList.reduce((a, b) => a + b);
+    print('Total missing: $sum');
   }
 
   @override
@@ -33,13 +42,28 @@ class _ProductDetailState extends State<ProductDetailPage> {
     return Scaffold(
       backgroundColor: Colors.black26,
       body: Center(
-        child: Container(
-          width:  screenWidth / 1.2,
-          height:  screenHeight / 1.2,
-          child: Container(
-            height: screenHeight /1.2,
-            child: Text(widget.detail.productName, style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 32.0),
+              alignment: Alignment.topCenter,
+              width: screenWidth / 3,
+              height: screenHeight / 1.2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(widget.detail.productName, style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
+                  Image.asset(widget.detail.assetPath != null ? widget.detail.assetPath : null, height: screenHeight / 1.5),
+                ],
+              ),
+            ),
+            Container(
+              width: screenWidth / 2,
+              height: screenHeight / 1.2,
+              color: Colors.green,
+            )
+          ],
         ),
       ),
     );

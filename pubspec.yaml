@@ -32,6 +32,24 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/agua_pura.jpg
+    - assets/images/cuca_garrafa.png
+    - assets/images/eka_garrafa.png
+    - assets/images/eka_lata.png
+    - assets/images/fanta_lata.png
+    - assets/images/nocal_garrafa.png
+    - assets/images/cuca_lata.png
+    - assets/images/cuca_preta_lata.png
+    - assets/images/nocal_lata.png
+    - assets/images/booster_lata.jpg
+    - assets/images/booster_garrafa.jpg
+    - assets/images/hamburger.jpg
+    - assets/images/vinho_copo.jpg
+    - assets/images/waterbottle.png
+    - assets/images/carne.png
+    - assets/images/frango.png
+    - assets/images/isca.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
