@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:inventory_app/pages/product_detail_page.dart';
 import 'package:inventory_app/widgets/calc_buttons.dart';
 import 'package:inventory_app/calculations.dart';
 import 'package:inventory_app/database/data.dart';
@@ -99,12 +100,6 @@ class _HomePageState extends State<HomePage> {
     double tableWidth = 3 * (screenWidth / 4);
     double keyboardWidth = screenWidth / 4;
     return Scaffold(
-//      appBar: AppBar(
-//        title: GestureDetector(
-//          child: Text('Inventario - ${dateMonth(DateTime.now().month)}'),
-//        ),
-//        centerTitle: true,
-//      ),
       body: Container(
         color: Colors.black87,
         //padding: EdgeInsets.only(top: (statusBarHeight * 2)),
@@ -248,14 +243,25 @@ class _HomePageState extends State<HomePage> {
                 return Card(
                   elevation: 4.0,
                   margin: EdgeInsets.all(0.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 150.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1.0, color: Colors.black54),
+                  child: InkWell(
+                    onTap: (){
+                      if(widget.productDetailsList.indexOf(details) != 0 || widget.productDetailsList.indexOf(details) != 1){
+                        Navigator.push(context, MaterialPageRoute<Null>(
+                            builder: (context){
+                              return ProductDetailPage(detail: details, database: widget.database);
+                            }
+                        ));
+                      }
+                    },
+                    child: Container(
+                      height: 50.0,
+                      width: 150.0,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.0, color: Colors.black54),
+                      ),
+                      child: Text(productName),
                     ),
-                    child: Text(productName),
                   ),
                 );
               }).toList(),
